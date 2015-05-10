@@ -13,6 +13,8 @@ abstract class CrudController extends AbstractController
         'label_entities'    => 'Applications',
         'label_entity'      => 'Application',
         'route_index'       => 'homepage',
+        'route_edit'        => false,
+        'route_create'      => false,
     );
 
     /**
@@ -64,8 +66,8 @@ abstract class CrudController extends AbstractController
 
             if ($request->query->has($form->getName())) {
                 $filterActive = true;
-                $form->setData($request->query->getIterator()[$form->getName()]);
-                $criteria = $form->getData();
+                $form->submit((array)$request->query->getIterator()['form']);
+                $criteria = $this->createFilterCriteria($form);
             }
 
             $formView = $form->createView();
@@ -118,5 +120,29 @@ abstract class CrudController extends AbstractController
             'form'          => $form->createView(),
             'options'       => $options,
         ));
+    }
+
+    protected function createFilterCriteria(FormInterface $form)
+    {
+        $criteria = array();
+
+        /** @var FormInterface $child */
+        foreach ($form as $child) {
+            $field = $child->getName();
+            switch ($child->getConfig()->getType()->getName()) {
+                case 'text':
+                    $criteria[$field . ' LIKE :'.$field] = '%' . $child->getData() . '%';
+                    break;
+                case 'checkbox':
+                    if ($child->getData()) {
+                        $criteria[$field] = true;
+                    }
+                    break;
+                default:
+                    $criteria[$field] = $child->getData();
+            }
+        }
+
+        return $criteria;
     }
 }

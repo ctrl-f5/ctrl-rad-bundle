@@ -54,12 +54,10 @@ class Resolver
             } else {
                 $fieldConfig = $this->getFieldConfig($key, $rootAlias);
                 $fieldConfig['is_property'] = true;
-                $field = $fieldConfig['field'];
 
                 $paramId = count($queryBuilder->getParameters()) + 1;
-                if (strpos($key, ' ') === false) {
-                    $field .= ' = ?' . $paramId;
-                }
+                $field = $fieldConfig['field'] . ' ' . $fieldConfig['comparison'] . ' ?' . $paramId;
+
                 $queryBuilder->andWhere($field)->setParameter($paramId, $value);
             }
             $path = $fieldConfig['path'];
@@ -128,6 +126,7 @@ class Resolver
 
         return array(
             'is_property' => count($parts) > 1,
+            'comparison' => count($parts) > 1 ? $parts[1]: '=',
             'alias' => end($path),
             'parent' => $parent,
             'path' => $path,

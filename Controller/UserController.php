@@ -30,14 +30,25 @@ class UserController extends CrudController
         return $this->get('ctrl_rad.entity.user');
     }
 
+    /**
+     * @return array
+     */
     protected function configureIndex()
     {
         return array_merge($this->options, array(
             'filter_enabled'    => true,
-            'filter_form'       => $this->createFormBuilder()->getForm(),
+            'filter_form'       => $this->createFormBuilder(null, array('csrf_protection' => false))
+                ->add('username')
+                ->add('email')
+                ->add('enabled', 'checkbox')
+                ->add('locked', 'checkbox')
+                ->getForm(),
             'columns'           => array(
                 'id'        => '#',
                 'username'  => 'Username',
+                'email'     => 'Email',
+                'enabled'   => 'Enabled',
+                'locked'    => 'Locked',
             ),
             'actions'           => array(
                 array(
