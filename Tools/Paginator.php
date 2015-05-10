@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Tools;
+namespace Ctrl\RadBundle\Tools;
 
 use Symfony\Component\HttpFoundation\Request;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Twig;
+namespace Ctrl\RadBundle\Twig;
 
-use AppBundle\Tools\Paginator;
+use Ctrl\RadBundle\Tools\Paginator;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -52,6 +52,7 @@ class BootstrapExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
+            new \Twig_SimpleFunction('page_title', array($this, 'pageTitle'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('pagination', array($this, 'pagination'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('is_type', array($this, 'isType')),
         );
@@ -102,6 +103,17 @@ class BootstrapExtension extends \Twig_Extension
         }
 
         return "<ul class=\"pagination\">$pages</ul>";
+    }
+
+    public function pageTitle($title)
+    {
+        return <<<HTML
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">$title</h1>
+                </div>
+            </div>
+HTML;
     }
 
     public function isType($var, $type)
