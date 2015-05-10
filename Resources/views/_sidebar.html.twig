@@ -3,6 +3,9 @@
         <ul class="nav" id="side-menu">
             <li>
                 <a href="{{ path('homepage') }}"><i class="fa fa-home fa-fw"></i> Home</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('ctrl_rad_user_index') }}"><i class="fa fa-users fa-fw"></i> Users</a>
+                {% endif %}
             </li>
         </ul>
     </div>

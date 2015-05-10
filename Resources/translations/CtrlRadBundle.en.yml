@@ -5,3 +5,10 @@ security:
 registration:
     form_title: "Register a new Account"
     cancel: "Cancel"
+
+crud:
+    index:
+        title: "%s"
+        column:
+            actions:
+                "Actions"

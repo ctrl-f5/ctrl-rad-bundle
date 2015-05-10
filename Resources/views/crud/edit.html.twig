@@ -1,0 +1,9 @@
+{% extends 'CtrlRadBundle::app.html.twig' %}
+
+{% block content %}
+
+    {{ page_title(((entity) ? 'Manage' : 'Create New' ) ~ ' ' ~ options.label_entity|trans) }}
+
+    {{ form(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+{% endblock %}

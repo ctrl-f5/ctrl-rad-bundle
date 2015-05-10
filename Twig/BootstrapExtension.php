@@ -105,11 +105,11 @@ class BootstrapExtension extends \Twig_Extension
         return "<ul class=\"pagination\">$pages</ul>";
     }
 
-    public function pageTitle($title)
+    public function pageTitle($title, $width = 12)
     {
         return <<<HTML
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-$width">
                     <h1 class="page-header">$title</h1>
                 </div>
             </div>

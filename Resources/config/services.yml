@@ -1,6 +1,13 @@
 services:
 
     #
+    # entity services
+    #
+    ctrl_rad.entity.user:
+        class: Ctrl\RadBundle\EntityService\UserService
+        arguments: [@doctrine.orm.entity_manager]
+
+    #
     # Twig extensions
     #
 #
@@ -8,6 +15,12 @@ services:
 #        class: Twig_Extensions_Extension_Text
 #        tags:
 #            - { name: twig.extension }
+
+    twig.extension.ctrl_rad:
+        class: Ctrl\RadBundle\Twig\CtrlRadExtension
+        public: false
+        tags:
+            - { name: twig.extension }
 
     twig.extension.bootstrap:
         class: Ctrl\RadBundle\Twig\BootstrapExtension
