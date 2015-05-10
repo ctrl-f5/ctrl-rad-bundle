@@ -1,0 +1,31 @@
+services:
+
+    #
+    # AuditLog service and EventListeners
+    #
+
+    app.audit_log:
+        class: AppBundle\AuditLog\Logger
+        arguments: [@doctrine.orm.entity_manager, @security.token_storage]
+
+    app.audit_log.entity_listener:
+        class: AppBundle\AuditLog\EntityChangeLogger
+        arguments: [@security.token_storage]
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+
+    #
+    # Twig extensions
+    #
+
+    twig.extension.text:
+        class: Twig_Extensions_Extension_Text
+        tags:
+            - { name: twig.extension }
+
+    twig.extension.bootstrap:
+        class: AppBundle\Twig\BootstrapExtension
+        arguments: [@request_stack, @router, @translator.default]
+        public: false
+        tags:
+            - { name: twig.extension }
