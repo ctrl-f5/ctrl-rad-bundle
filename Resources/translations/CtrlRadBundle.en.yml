@@ -1,0 +1,7 @@
+security:
+    login:
+        form_title: "Please Log in"
+
+registration:
+    form_title: "Register a new Account"
+    cancel: "Cancel"
