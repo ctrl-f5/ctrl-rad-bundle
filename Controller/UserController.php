@@ -23,31 +23,28 @@ class UserController extends CrudController
         return $this->get('ctrl_rad.entity.user');
     }
 
-    protected function configureCrud()
+    /**
+     * @param array $options
+     * @return array
+     */
+    protected function configureCrud(array $options = array())
     {
-        $config = parent::configureCrud();
-        return array_merge(
-            $config,
-            array(
-                'label_entities'    => 'Users',
-                'label_entity'      => 'User',
-                'route_index'       => 'ctrl_rad_user_index',
-                'route_edit'        => 'ctrl_rad_user_edit',
-                'route_create'      => 'ctrl_rad_user_edit',
-                'templates'             => array_merge($config['templates'], array(
-                    'filter_elements'   => 'CtrlRadBundle:user:_form_elements.html.twig',
-                ))
+        return parent::configureCrud(array(
+            'label_entity'          => 'User',
+            'route_prefix'          => 'ctrl_rad_',
+            'templates'             => array(
+                'filter_elements'   => 'CtrlRadBundle:user:_filter.html.twig',
             )
-        );
+        ));
     }
 
     /**
+     * @param array $options
      * @return array
      */
-    protected function configureIndex()
+    protected function configureIndex(array $options = array())
     {
-        return array_merge(parent::configureIndex(), array(
-            'filter_enabled'    => true,
+        return parent::configureIndex(array(
             'filter_form'       => $this->createFormBuilder(null, array('csrf_protection' => false))
                 ->add('username')
                 ->add('email')
@@ -62,25 +59,22 @@ class UserController extends CrudController
                 'locked'    => 'Locked',
             ),
             'actions'           => array(
-                array(
-                    'label'     => 'Edit',
-                    'icon'      => 'edit',
-                    'class'     => 'primary',
-                    'route'     => function (User $user) {
-                        return $this->generateUrl('ctrl_rad_user_edit', array('id' => $user->getId()));
-                    }
-                ),
+                $this->configureButton(array(
+                    'label'         => 'Edit',
+                    'icon'          => 'edit',
+                    'class'         => 'primary',
+                    'route_name'    => 'ctrl_rad_user_edit'
+                )),
             ),
         ));
     }
 
-    protected function configureEdit($id = null)
+    protected function configureEdit($id = null, array $options = array())
     {
         $config = parent::configureEdit($id);
+        $config['form'] = $this->createForm(new UserEditType(), $config['entity']);
 
-        return array_merge($config, array(
-            'form' => $this->createForm(new UserEditType(), $config['entity'])
-        ));
+        return $config;
     }
 
     /**

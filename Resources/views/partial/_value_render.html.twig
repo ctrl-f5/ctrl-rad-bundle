@@ -1,0 +1,18 @@
+{% spaceless %}
+{% if config|is_type('string') %}
+
+    {% set val = attribute(parent, config) %}
+    {% if val|is_type('bool') %}
+        {{ val|label }}
+    {% elseif val|is_type('datetime') %}
+        {{ val|date }}
+    {% else %}
+        {{ val }}
+    {% endif %}
+
+{% elseif config|is_type('array') %}
+
+    {# TODO: parse display config #}
+
+{% endif %}
+{% endspaceless %}

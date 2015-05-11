@@ -2,13 +2,6 @@
 
 namespace Ctrl\RadBundle\Twig;
 
-use Ctrl\RadBundle\Tools\Paginator;
-use Symfony\Bundle\FrameworkBundle\Translation\Translator;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-
 class CtrlRadExtension extends \Twig_Extension
 {
     protected $twig;

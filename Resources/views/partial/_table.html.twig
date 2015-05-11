@@ -12,11 +12,7 @@
     <tr>
         {% for prop, label in options.columns %}
         <td>
-            {% if attribute(entity, prop)|is_type('bool') %}
-                {{ attribute(entity, prop)|label }}
-            {% else %}
-                {{ attribute(entity, prop) }}
-            {% endif %}
+            {% include "CtrlRadBundle:partial:_value_render.html.twig" with { config: prop, parent: entity } only %}
         </td>
         {% endfor %}
         <td>

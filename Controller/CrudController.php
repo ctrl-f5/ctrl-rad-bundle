@@ -9,12 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class CrudController extends AbstractController
 {
-    protected $options = array(
-        'label_entities'        => 'Entities',
+    protected $crudOptions = array();
+
+    protected $defaultCrudOptions = array(
         'label_entity'          => 'Entity',
-        'route_index'           => 'homepage',
-        'route_edit'            => false,
-        'route_create'          => false,
         'templates'             => array(
             'index_table'       => 'CtrlRadBundle:partial:_table.html.twig',
             'form_elements'     => 'CtrlRadBundle:partial:_form_elements.html.twig',
@@ -28,36 +26,109 @@ abstract class CrudController extends AbstractController
      */
     abstract protected function getEntityService();
 
-    protected function configureCrud()
+    protected function getCrudOptions()
     {
-        return $this->options;
+        if (empty($this->crudOptions)) {
+            $config = $this->get('service_container')->getParameter('ctrl_rad.config');
+            $config['templates'];
+
+            $this->crudOptions = $this->defaultCrudOptions;
+            $this->crudOptions['templates'] = array_replace_recursive(
+                $config['templates'],
+                $this->defaultCrudOptions['templates']
+            );
+        }
+
+        return $this->crudOptions;
     }
 
-    protected function configureIndex()
+    /**
+     * @param array $options
+     * @return array
+     */
+    protected function configureCrud(array $options = array())
     {
-        return array_merge($this->configureCrud(), array(
-            'filter_enabled'    => false,
-            'filter_form'       => null,
-            'columns'           => array(
-                'id' => '#',
+        if (isset($options['label_entity'])) {
+            $routePrefix = isset($options['route_prefix']) ? $options['route_prefix']: '';
+
+            if (!isset($options['label_entities'])) $options['label_entities']  = $options['label_entity'] . 's';
+            if (!isset($options['route_index']))    $options['route_index']     = $routePrefix . strtolower($options['label_entity']) . '_index';
+            if (!isset($options['route_edit']))     $options['route_edit']      = $routePrefix . strtolower($options['label_entity']) . '_edit';
+            if (!isset($options['route_create']))   $options['route_create']    = $routePrefix . strtolower($options['label_entity']) . '_edit';
+        }
+
+        return array_replace_recursive(
+            $this->getCrudOptions(),
+            $options
+        );
+    }
+
+    /**
+     * @param array $options
+     * @return array
+     */
+    protected function configureIndex(array $options = array())
+    {
+        if (!isset($options['filter_enabled'])) {
+            $options['filter_enabled'] = (isset($options['filter_form'])) && $options['filter_form'];
+        }
+
+        return array_merge(
+            $this->configureCrud(),
+            array(
+                'filter_enabled'    => false,
+                'filter_form'       => null,
+                'columns'           => array(
+                    'id' => '#',
+                ),
+                'actions'           => array(),
             ),
-            'actions'           => array(),
-        ));
+            $options
+        );
     }
 
-    protected function configureEdit($id = null)
+    /**
+     * @param null|int $id
+     * @param array $options
+     * @return array
+     */
+    protected function configureEdit($id = null, array $options = array())
     {
         $entity = null;
         if ($id) {
             $entity = $this->getEntityService()->findOne(array('id' => $id));
         }
 
-        return array_merge($this->configureCrud(), array(
-            'form'      => null,
-            'entity'    => $entity,
-        ));
+        return array_merge(
+            $this->configureCrud(),
+            array(
+                'form'      => null,
+                'id'        => $id,
+                'entity'    => $entity,
+            ),
+            $options
+        );
     }
 
+    /**
+     * @param array $options
+     * @return array
+     */
+    protected function configureButton(array $options)
+    {
+        return array_merge(
+            array(
+                'type'      => 'a',
+                'label'     => 'action',
+                'icon'      => null,
+                'class'     => 'default',
+                'route'     => function ($entity) use ($options) {
+                    return $this->generateUrl($options['route_name'], array('id' => $entity->getId()));
+                }
+            ),
+            $options
+        );
+    }
 
     /**
      * @param Request $request
@@ -120,7 +191,7 @@ abstract class CrudController extends AbstractController
         if ($id) {
             $entity = $this->getEntityService()->findOne(array('id' => $id));
             if (!$entity) {
-                $this->addFlash('error', sprintf('Application not found'));
+                $this->addFlash('error', sprintf('%s not found', $options['label_entity']));
                 return $this->redirect($this->generateUrl($options['route_index']));
             }
         }
