@@ -19,6 +19,13 @@ class CtrlRadExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $configuration = new Configuration();
+
+        $config = $this->processConfiguration($configuration, $configs);
+
+        // save config for easy access
+        $container->setParameter('ctrl_rad.config', $config);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

@@ -1,9 +1,9 @@
-{% extends "CtrlRadBundle::base.html.twig" %}
+{% extends ctrl_rad_templates.base %}
 
 {% block body %}
-<div id="wrapper">
+    <div id="wrapper">
 
-    {% include 'CtrlRadBundle::_frame.html.twig' %}
+        {% include ctrl_rad_templates.app_frame %}
 
     <div id="page-wrapper">
         {% for type, flashMessages in app.session.flashBag %}

@@ -10,14 +10,15 @@ services:
     #
     # Twig extensions
     #
-#
-#    twig.extension.text:
-#        class: Twig_Extensions_Extension_Text
-#        tags:
-#            - { name: twig.extension }
+
+    twig.extension.text:
+        class: Twig_Extensions_Extension_Text
+        tags:
+            - { name: twig.extension }
 
     twig.extension.ctrl_rad:
         class: Ctrl\RadBundle\Twig\CtrlRadExtension
+        arguments: [@twig, %ctrl_rad.config%]
         public: false
         tags:
             - { name: twig.extension }
