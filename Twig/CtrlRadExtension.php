@@ -31,6 +31,13 @@ class CtrlRadExtension extends \Twig_Extension
         );
     }
 
+    public function getFunctions()
+    {
+        return array(
+            new \Twig_SimpleFunction('is_type', array($this, 'isType')),
+        );
+    }
+
     /**
      * @param callable $callable
      * @param mixed ...$argument

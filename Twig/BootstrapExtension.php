@@ -54,7 +54,6 @@ class BootstrapExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFunction('page_title', array($this, 'pageTitle'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('pagination', array($this, 'pagination'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('is_type', array($this, 'isType')),
         );
     }
 
