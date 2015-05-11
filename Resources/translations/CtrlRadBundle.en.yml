@@ -12,3 +12,7 @@ crud:
         column:
             actions:
                 "Actions"
+form:
+    button:
+        save: "Save"
+        back: "Back"

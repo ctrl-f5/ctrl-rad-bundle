@@ -10,11 +10,17 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class CrudController extends AbstractController
 {
     protected $options = array(
-        'label_entities'    => 'Applications',
-        'label_entity'      => 'Application',
-        'route_index'       => 'homepage',
-        'route_edit'        => false,
-        'route_create'      => false,
+        'label_entities'        => 'Entities',
+        'label_entity'          => 'Entity',
+        'route_index'           => 'homepage',
+        'route_edit'            => false,
+        'route_create'          => false,
+        'templates'             => array(
+            'index_table'       => 'CtrlRadBundle:partial:_table.html.twig',
+            'form_elements'     => 'CtrlRadBundle:partial:_form_elements.html.twig',
+            'form_buttons'      => 'CtrlRadBundle:partial:_form_buttons.html.twig',
+            'filter_elements'   => 'CtrlRadBundle:partial:_form_elements.html.twig',
+        )
     );
 
     /**
@@ -22,9 +28,14 @@ abstract class CrudController extends AbstractController
      */
     abstract protected function getEntityService();
 
+    protected function configureCrud()
+    {
+        return $this->options;
+    }
+
     protected function configureIndex()
     {
-        return array_merge($this->options, array(
+        return array_merge($this->configureCrud(), array(
             'filter_enabled'    => false,
             'filter_form'       => null,
             'columns'           => array(
@@ -41,7 +52,7 @@ abstract class CrudController extends AbstractController
             $entity = $this->getEntityService()->findOne(array('id' => $id));
         }
 
-        return array_merge($this->options, array(
+        return array_merge($this->configureCrud(), array(
             'form'      => null,
             'entity'    => $entity,
         ));
@@ -55,6 +66,11 @@ abstract class CrudController extends AbstractController
     public function indexAction(Request $request)
     {
         $options        = $this->configureIndex();
+
+        if ($options['route_index'] === false) {
+            throw $this->createNotFoundException('CRUD route disabled');
+        }
+
         $filterActive   = false;
         $criteria       = array();
         $form           = null;
@@ -91,6 +107,11 @@ abstract class CrudController extends AbstractController
     public function editAction(Request $request, $id = null)
     {
         $options        = $this->configureEdit($id);
+
+        if ((!$id && $options['route_create'] === false) || ($id && $options['route_edit'] === false)) {
+            throw $this->createNotFoundException('CRUD route disabled');
+        }
+
         /** @var FormInterface $form */
         $form           = $options['form'];
         $formView       = null;
@@ -110,7 +131,7 @@ abstract class CrudController extends AbstractController
 
                 return $this->redirect($this->generateUrl(
                     $request->get('_route'),
-                    $request->get('_routeParams')
+                    $request->get('_route_params')
                 ));
             }
         }

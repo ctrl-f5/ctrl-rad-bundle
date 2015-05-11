@@ -1,0 +1,48 @@
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+    <tr>
+        {% for label in options.columns %}
+            <th>{{ label|trans }}</th>
+        {% endfor %}
+        <th>{{ "crud.index.column.actions"|trans({}, 'CtrlRadBundle') }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in paginator %}
+    <tr>
+        {% for prop, label in options.columns %}
+        <td>
+            {% if attribute(entity, prop)|is_type('bool') %}
+                {{ attribute(entity, prop)|label }}
+            {% else %}
+                {{ attribute(entity, prop) }}
+            {% endif %}
+        </td>
+        {% endfor %}
+        <td>
+            {% spaceless %}
+            {% for action in options.actions %}
+                <a href="{{ action.route|call(entity) }}" class="btn btn-primary btn-sm {{ action.class }}">
+                    {% if action.class %}<i class="fa fa-{{ action.icon }} fa-fw"></i>{% endif %}
+                    {{ action.label|trans }}
+                </a>
+            {% endfor %}
+            {% endspaceless %}
+        </td>
+    </tr>
+    {% else %}
+        <tr>
+            <td colspan="8">No {{ options.label_entities|trans }} found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    {% if paginator.pageCount > 1 %}
+    <tfoot>
+        <tr>
+            <td colspan="8" class="text-center">
+                {{ pagination(paginator, app.request) }}
+            </td>
+        </tr>
+    </tfoot>
+    {% endif %}
+</table>

@@ -4,6 +4,12 @@
 
     {{ page_title(((entity) ? 'Manage' : 'Create New' ) ~ ' ' ~ options.label_entity|trans) }}
 
-    {{ form(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    {% include options.templates.form_elements with { options: options, form: form } only %}
+
+    {% include options.templates.form_buttons with { options: options, form: form } only %}
+
+    {{ form_end(form) }}
 
 {% endblock %}

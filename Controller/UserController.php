@@ -4,6 +4,7 @@ namespace Ctrl\RadBundle\Controller;
 
 use Ctrl\RadBundle\Entity\User;
 use Ctrl\RadBundle\EntityService\AbstractService;
+use Ctrl\RadBundle\Form\UserEditType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,14 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends CrudController
 {
-    protected $options = array(
-        'label_entities'    => 'Users',
-        'label_entity'      => 'User',
-        'route_index'       => 'ctrl_rad_user_index',
-        'route_edit'        => 'ctrl_rad_user_edit',
-        'route_create'      => 'ctrl_rad_user_edit',
-    );
-
     /**
      * @return AbstractService
      */
@@ -30,12 +23,30 @@ class UserController extends CrudController
         return $this->get('ctrl_rad.entity.user');
     }
 
+    protected function configureCrud()
+    {
+        $config = parent::configureCrud();
+        return array_merge(
+            $config,
+            array(
+                'label_entities'    => 'Users',
+                'label_entity'      => 'User',
+                'route_index'       => 'ctrl_rad_user_index',
+                'route_edit'        => 'ctrl_rad_user_edit',
+                'route_create'      => 'ctrl_rad_user_edit',
+                'templates'             => array_merge($config['templates'], array(
+                    'filter_elements'   => 'CtrlRadBundle:user:_form_elements.html.twig',
+                ))
+            )
+        );
+    }
+
     /**
      * @return array
      */
     protected function configureIndex()
     {
-        return array_merge($this->options, array(
+        return array_merge(parent::configureIndex(), array(
             'filter_enabled'    => true,
             'filter_form'       => $this->createFormBuilder(null, array('csrf_protection' => false))
                 ->add('username')
@@ -68,7 +79,7 @@ class UserController extends CrudController
         $config = parent::configureEdit($id);
 
         return array_merge($config, array(
-            'form' => $this->createFormBuilder($config['entity'])->getForm()
+            'form' => $this->createForm(new UserEditType(), $config['entity'])
         ));
     }
 
