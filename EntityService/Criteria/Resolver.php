@@ -94,8 +94,9 @@ class Resolver
             $config = $this->getFieldConfig($fieldOrPath, $parentAlias);
             $p = $config['path'];
         }
+        $joinPart = $queryBuilder->getDQLPart('join');
         for ($i = 0; $i < count($p); $i++) {
-            foreach ($queryBuilder->getDQLPart('join') as $root => $joins) {
+            foreach ($joinPart as $root => $joins) {
                 foreach ($joins as $join) {
                     if ($join->getAlias() == $p[$i]) return;
                 }
