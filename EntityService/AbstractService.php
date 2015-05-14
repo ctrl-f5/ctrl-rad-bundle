@@ -54,6 +54,9 @@ abstract class AbstractService
      */
     protected $resultLimit = 15;
 
+    /**
+     * @param ObjectManager $doctrine
+     */
     public function __construct(ObjectManager $doctrine)
     {
         $this->doctrine = $doctrine;
