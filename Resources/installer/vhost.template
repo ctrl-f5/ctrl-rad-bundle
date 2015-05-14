@@ -1,0 +1,14 @@
+<VirtualHost *:80>
+    ServerName __DOMAIN__
+    ServerAlias www.__DOMAIN__
+    DocumentRoot "__DIR__/web"
+
+    <Directory "__DIR__">
+        DirectoryIndex app.php
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+        Require all granted
+    </Directory>
+
+</VirtualHost>

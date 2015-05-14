@@ -1,0 +1,70 @@
+.arrow-crumb {
+    float: left;
+    padding: 0;
+    margin: 0;
+    padding-right: 40px;
+    list-style: none;
+    overflow: hidden;
+    font: 18px Helvetica, Arial, Sans-Serif;
+}
+.arrow-crumb li {
+    float: left;
+}
+.arrow-crumb li a {
+    color: #444;
+    text-decoration: none;
+    padding: 15px 0 15px 45px;
+    background: #BBB;
+    position: relative;
+    display: block;
+    float: left;
+}
+.arrow-crumb li a:after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;           /* Go big on the size, and let overflow hide */
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid #BBB;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 100%;
+    z-index: 2;
+}
+.arrow-crumb li a:before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1;
+}
+.arrow-crumb li:first-child { margin-left: -65px; }
+.arrow-crumb li:first-child a { color: #F8F8F8; background: #F8F8F8; }
+.arrow-crumb li:first-child a:after { border-left-color: #F8F8F8; }
+
+.arrow-crumb li:nth-child(2) { margin-left: -20px; }
+.arrow-crumb li:nth-child(2) a       { background:        #DDD; color: #666; }
+.arrow-crumb li:nth-child(2) a:after { border-left-color: #DDD; color: #666; }
+
+.arrow-crumb li:nth-child(3) a       { background:        #CCC; color: #666; }
+.arrow-crumb li:nth-child(3) a:after { border-left-color: #CCC; color: #666; }
+
+.arrow-crumb li a:hover { background: #999; color: #FFF; }
+.arrow-crumb li a:hover:after { border-left-color: #999 !important; }
+
+.arrow-crumb li:first-child { margin-left: -65px; }
+.arrow-crumb li:first-child a { color: #F8F8F8; background: #F8F8F8; }
+.arrow-crumb li:first-child a:after { border-left-color: #F8F8F8; }
+.arrow-crumb li:first-child a:hover { background: #F8F8F8; color: #F8F8F8; text-decoration: underline; }
+.arrow-crumb li:first-child a:hover:after { border-left-color: #F8F8F8 !important; }
+

@@ -1,5 +1,9 @@
 {% extends ctrl_rad_templates.app %}
 
+{% block breadcrumbs %}
+    <li><a href="{{ path(options.route_index) }}">{{ options.label_entities|trans }}</a></li>
+{% endblock %}
+
 {% block content %}
 
     {{ page_title('crud.index.title'|trans({}, 'CtrlRadBundle')|format(options.label_entities|trans)) }}

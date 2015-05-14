@@ -1,5 +1,10 @@
 {% extends ctrl_rad_templates.app %}
 
+{% block breadcrumbs %}
+    <li><a href="{{ path(options.route_index) }}">{{ options.label_entities|trans }}</a></li>
+    <li><a href="#">{{ "edit"|trans }}</a></li>
+{% endblock %}
+
 {% block content %}
 
     {{ page_title(((entity) ? 'Manage' : 'Create New' ) ~ ' ' ~ options.label_entity|trans) }}

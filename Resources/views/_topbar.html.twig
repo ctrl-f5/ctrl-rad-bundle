@@ -1,12 +1,19 @@
-<div class="navbar-header">
+<div class="navbar-header" style="width: 250px;">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="/">{% if app_title is defined %}{{ app_title }}{% else %}CTRL RAD{% endif %}</a>
+    <a class="navbar-brand" href="/">{{ app_title|default('CTRL RAD') }}</a>
 </div>
+
+<ul class="nav navbar-top-links navbar-left">
+    <li class="dropdown">
+        <a href="#"><i class="fa fa-fw fa-home"></i></a>
+    </li>
+    {% block breadcrumbs %}{% endblock %}
+</ul>
 
 <ul class="nav navbar-top-links navbar-right">
     {% include ctrl_rad_templates.app_topbar_extra %}
