@@ -31,5 +31,5 @@ before_script:
 after_script:
   - vendor/bin/test-reporter
 
-script: phpunit --coverage-clover=coverage.clover
+script: phpunit --coverage-clover build/logs/clover.xml
 
