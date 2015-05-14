@@ -26,6 +26,7 @@ matrix:
 
 before_script:
   - composer self-update
+  - composer install
 
 script: phpunit --coverage-clover=coverage.clover
 
