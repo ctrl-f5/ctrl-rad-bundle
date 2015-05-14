@@ -29,7 +29,7 @@ before_script:
   - composer install --dev
 
 after_script:
-  - vendor/bin/test-reporter
+  - CODECLIMATE_REPO_TOKEN=34a179db63627817d4e2cfaa793010aad7a88f1cb997407471e4a012ca9118d2 ./vendor/bin/test-reporter
 
 script: phpunit --coverage-clover build/logs/clover.xml
 
