@@ -54,21 +54,24 @@ class ApacheSetupCommand extends Command
         $output->writeln("-----");
         $output->writeln("");
 
-        $confirmed = $dialog->askConfirmation($output, "<question>please confirm, does this look good?</question> (y/N)", false);
+        if (!$input->getOption('no-interaction')) {
+            //$confirmed = $dialog->askConfirmation($output, "<question>please confirm, does this look good?</question> (y/N)", false);
+            //if (!$confirmed) return 0;
+        }
 
-        if (!$confirmed) return 0;
+        $output->writeln("we're not actually gonna do all that right now, feel free to copy and execute it manually");
+        //$this->writeFiles($vhostFile, $vhost, $hostsFile, $hosts);
 
-        $password = $dialog->askHiddenResponse($output, "<question>root password?</question>");
-
-        $this->writeFiles($password, $vhostFile, $vhost, $hostsFile, $hosts);
+        return 0;
     }
 
-    protected function writeFiles($password, $vhostFile, $vhost, $hostsFile, $hosts)
+    protected function writeFiles($vhostFile, $vhost, $hostsFile, $hosts)
     {
         $hosts = PHP_EOL . $hosts;
-        var_dump("echo \"$password\" | sudo su && echo '$vhost' > $vhostFile");
-        exec("echo \"$password\" | sudo echo '$vhost' > $vhostFile");
-        exec("echo \"$password\" | sudo echo '$hosts' > $hostsFile");
+        if (!file_exists($vhostFile)) {
+            exec("echo '$vhost' > $vhostFile");
+        }
+        exec("echo '$hosts' >> $hostsFile");
     }
 
     protected function getVhostContent($domain, $rootDir)
