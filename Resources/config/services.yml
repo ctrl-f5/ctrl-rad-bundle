@@ -3,9 +3,11 @@ services:
     #
     # entity services
     #
+
     ctrl_rad.entity.user:
         class: Ctrl\RadBundle\EntityService\UserService
-        arguments: [@doctrine.orm.entity_manager]
+        tags:
+            - { name: ctrl_rad.entity_service }
 
     #
     # Twig extensions
