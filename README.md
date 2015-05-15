@@ -36,8 +36,8 @@ The app title that's used in the topbar and the html title can be set through th
 This can also be set globally:
 
     twig:
-        globals:
-            app_title: "My App"
+      globals:
+        app_title: "My App"
             
 Twig Extensions
 ---------------
