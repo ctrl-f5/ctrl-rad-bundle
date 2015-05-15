@@ -7,13 +7,15 @@ Ctrl RAD Bundle
 
 This bundle provides components to have a Symfony application up and running ASAP.
 
+There is [a Fork available that implements this bundle][101] in the Symfony2 standard distribution.
+
 What's inside?
 --------------
 
 * A layout based on [StartBootstrap Admin 2][2] including:
     - Twig Extensions for easy use of [Twitter Bootstrap][1] components suck as label and pagination.
     - easy configurable layout and templates for sidebar, topbar and breadcrumbs
-    - FOSUserBundle template overrides
+    - [FOSUserBundle][102] template overrides
 * Basic configurable CrudController
     - provides index and edit actions
     - index has a configurable grid with pagination and optional filtering
@@ -54,5 +56,5 @@ Twig Extensions
 [1]:    http://getbootstrap.com/
 [2]:    http://startbootstrap.com/template-overviews/sb-admin-2/
 [3]:    http://bower.io/
-[101]:  https://github.com/ctrl-f5/ctrl-rad-bundle
+[101]:  https://github.com/ctrl-f5/symfony-standard
 [102]:  https://github.com/FriendsOfSymfony/FOSUserBundle
