@@ -50,7 +50,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('knp_menu')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->booleanNode('enabled')->defaultValue(false)->end()
+                        ->booleanNode('enabled')->defaultValue(true)->end()
                     ->end()
                 ->end()
             ->end();

@@ -14,7 +14,16 @@ class SidebarMenuBuilder extends ContainerAware
     {
         $menu = $event->getMenu();
 
-        $menu->addChild('Home', array('route' => 'home'));
-        $menu->addChild('Users', array('route' => 'ctrl_rad_user_index'));
+        $menu->addChild('home', array(
+            'route' => 'homepage',
+            'label' => '<i class="fa fa-home fa-fw"></i> Home',
+            'extras' => array('safe_label' => true),
+        ));
+
+        $menu->addChild('user_index', array(
+            'route' => 'ctrl_rad_user_index',
+            'label' => '<i class="fa fa-users fa-fw"></i> Users',
+            'extras' => array('safe_label' => true),
+        ));
     }
 }

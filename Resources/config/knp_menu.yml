@@ -1,6 +1,18 @@
 services:
 
+    ctrl_rad.menu_builder:
+        class: Ctrl\RadBundle\Menu\MenuBuilder
+        arguments: ["@knp_menu.factory"]
+
     ctrl_rad.menu.sidebar:
+        class: Knp\Menu\MenuItem
+        factory_service: ctrl_rad.menu_builder
+        factory_method: createSidebarMenu
+        arguments: ["@request_stack", "@event_dispatcher"]
+        tags:
+            - { name: knp_menu.menu, alias: sidebar }
+
+    ctrl_rad.menu_configurator.sidebar:
         class: Ctrl\RadBundle\Menu\SidebarMenuBuilder
         tags:
             - { name: kernel.event_listener, event: ctrl_rad.menu_configure, method: onMenuConfigure }
