@@ -4,6 +4,7 @@ namespace Ctrl\RadBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,7 +31,9 @@ class ApacheSetupCommand extends Command
 
         $rootDir        = getcwd();
         /** @var DialogHelper $dialog */
-        $dialog         = $this->getHelper('dialog');
+        //$dialog         = $this->getHelper('dialog');
+        /** @var QuestionHelper $dialog */
+        //$question       = $this->getHelper('question');
         $domain         = $input->getArgument('domain');
         $vhost          = $this->getVhostContent($domain, $rootDir);
         $vhostFile      = "/etc/apache2/sites-available/$domain.conf";

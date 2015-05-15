@@ -17,7 +17,10 @@ class ApacheSetupCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName(), 'domain' => 'test'));
 
-        $this->assertSame(0, $commandTester->getStatusCode());
+        // status code is only available in 2.4 or higher
+        if (method_exists($commandTester, 'getStatusCode')) {
+            $this->assertSame(0, $commandTester->getStatusCode());
+        }
 
         $output = $commandTester->getDisplay(true);
 
