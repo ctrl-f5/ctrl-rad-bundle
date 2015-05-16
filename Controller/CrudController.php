@@ -193,7 +193,10 @@ abstract class CrudController extends AbstractController
 
         if ($request->isMethod('POST')) {
             if ($form->handleRequest($request)->isValid()) {
-                $this->getEntityService()->persist($form->getData());
+
+                $entity = $form->getData();
+                $this->crudPrePersist($entity);
+                $this->getEntityService()->persist($entity);
 
                 return $this->redirect($this->generateUrl(
                     $request->get('_route'),
@@ -208,6 +211,8 @@ abstract class CrudController extends AbstractController
             'options'       => $options,
         ));
     }
+
+    protected function crudPrePersist($entity) {}
 
     protected function createFilterCriteria(FormInterface $form)
     {
