@@ -14,5 +14,6 @@ services:
 
     ctrl_rad.menu_configurator.sidebar:
         class: Ctrl\RadBundle\Menu\SidebarMenuBuilder
+        arguments: [ @security.authorization_checker ]
         tags:
             - { name: kernel.event_listener, event: ctrl_rad.menu_configure, method: onMenuConfigure }

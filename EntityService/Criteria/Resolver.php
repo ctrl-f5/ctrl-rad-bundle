@@ -137,7 +137,10 @@ class Resolver
 
         $parts = explode(' and ', $expr);
         if (count($parts) > 1) {
-            foreach ($parts as $part) $result[] = $this->unpackFieldExpression(trim($part), $rootAlias)[0];
+            foreach ($parts as $part) {
+                $fields = $this->unpackFieldExpression(trim($part), $rootAlias);
+                $result[] = $fields[0];
+            }
             return $result;
         }
 

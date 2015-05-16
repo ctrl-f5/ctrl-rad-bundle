@@ -4,9 +4,17 @@ namespace Ctrl\RadBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
-class SidebarMenuBuilder extends ContainerAware
+class SidebarMenuBuilder
 {
+    protected $authChecker;
+
+    public function __construct(AuthorizationChecker $authChecker)
+    {
+        $this->authChecker = $authChecker;
+    }
+
     /**
      * @param ConfigureMenuEvent $event
      */
@@ -20,10 +28,13 @@ class SidebarMenuBuilder extends ContainerAware
             'extras' => array('safe_label' => true),
         ));
 
-        $menu->addChild('user_index', array(
-            'route' => 'ctrl_rad_user_index',
-            'label' => '<i class="fa fa-users fa-fw"></i> Users',
-            'extras' => array('safe_label' => true),
-        ));
+        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
+            $menu->addChild('user_index', array(
+                'route' => 'ctrl_rad_user_index',
+                'label' => '<i class="fa fa-users fa-fw"></i> Users',
+                'extras' => array('safe_label' => true),
+            ));
+        }
+
     }
 }
