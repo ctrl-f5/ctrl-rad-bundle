@@ -198,9 +198,11 @@ abstract class CrudController extends AbstractController
                 $this->crudPrePersist($entity);
                 $this->getEntityService()->persist($entity);
 
+                $routeParams = $request->get('_route_params');
+                $routeParams['id'] = $entity->getId();
                 return $this->redirect($this->generateUrl(
                     $request->get('_route'),
-                    $request->get('_route_params')
+                    $routeParams
                 ));
             }
         }

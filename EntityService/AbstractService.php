@@ -205,7 +205,7 @@ abstract class AbstractService
     public function get($id)
     {
         $queryBuilder = $this->getBaseQueryBuilder()
-            ->andWhere($this->rootAlias . ".id = :id")
+            ->andWhere($this->getRootAlias() . ".id = :id")
             ->setParameter('id', $id);
 
         return $queryBuilder->getQuery()->getSingleResult();

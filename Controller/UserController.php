@@ -71,7 +71,7 @@ class UserController extends CrudController
 
     protected function configureEdit($id = null, array $options = array())
     {
-        $config = parent::configureEdit($id);
+        $config = parent::configureEdit($id, $options);
         $config['form'] = $this->createForm(new UserEditType(), $config['entity']);
 
         return $config;
