@@ -13,12 +13,7 @@ abstract class CrudController extends AbstractController
 
     protected $defaultCrudOptions = array(
         'label_entity'          => 'Entity',
-        'templates'             => array(
-            'index_table'       => 'CtrlRadBundle:partial:_table.html.twig',
-            'form_elements'     => 'CtrlRadBundle:partial:_form_elements.html.twig',
-            'form_buttons'      => 'CtrlRadBundle:partial:_form_buttons.html.twig',
-            'filter_elements'   => 'CtrlRadBundle:partial:_form_elements.html.twig',
-        )
+        'templates'             => array()
     );
 
     /**

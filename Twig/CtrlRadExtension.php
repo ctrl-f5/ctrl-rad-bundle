@@ -4,13 +4,17 @@ namespace Ctrl\RadBundle\Twig;
 
 class CtrlRadExtension extends \Twig_Extension
 {
+    /**
+     * @var \Twig_Environment
+     */
     protected $twig;
 
-    public function __construct(\Twig_Environment $twig, array $config)
+    public function __construct(\Twig_Environment $twig = null, array $config = array())
     {
-        $this->twig = $twig;
-
-        $this->twig->addGlobal('ctrl_rad_templates', $config['templates']);
+        if ($twig) {
+            $this->twig = $twig;
+            $this->twig->addGlobal('ctrl_rad_templates', $config['templates']);
+        }
     }
 
     /**

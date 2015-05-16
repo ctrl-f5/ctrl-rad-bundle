@@ -15,12 +15,11 @@ class AbstractServiceTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->service = $this->getMockForAbstractClass(
-            'Ctrl\\RadBundle\\EntityService\\AbstractService',
-            array(),
-            '',
-            false
-        );
+        $this->service = $this->getMockBuilder('Ctrl\\RadBundle\\EntityService\\AbstractService')
+            ->disableOriginalConstructor()
+            ->setMethods(array())
+            ->getMockForAbstractClass()
+        ;
     }
 
     protected function tearDown()
