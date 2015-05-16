@@ -6,3 +6,4 @@ languages:
 exclude_paths:
   - "vendor"
   - "Resources"
+  - "Test"
