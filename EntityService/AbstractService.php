@@ -22,7 +22,7 @@ abstract class AbstractService
     /**
      * @var EntityRepository
      */
-    protected $repository;
+    private $repository;
 
     /**
      * @var string
@@ -55,13 +55,28 @@ abstract class AbstractService
     protected $resultLimit = 15;
 
     /**
-     * @param ObjectManager $doctrine
+     * @param ObjectManager|EntityManager $doctrine
+     * @return $this
      */
-    public function __construct(ObjectManager $doctrine)
+    public function setDoctrine($doctrine)
     {
         $this->doctrine = $doctrine;
-        $this->repository = $this->doctrine->getRepository($this->getEntityClass());
-        $this->rootAlias = $this->getRootAlias();
+        return $this;
+    }
+
+    /**
+     * @return EntityRepository
+     */
+    protected function getEntityRepository()
+    {
+        if (!$this->repository) {
+            if (!$this->doctrine) {
+                throw new \RuntimeException('doctrine not set');
+            }
+            $this->repository = $this->doctrine->getRepository($this->getEntityClass());
+        }
+
+        return $this->repository;
     }
 
     /**
@@ -162,14 +177,6 @@ abstract class AbstractService
         $queryBuilder = $this->getEntityRepository()->createQueryBuilder($rootAlias);
 
         return $queryBuilder;
-    }
-
-    /**
-     * @return EntityRepository
-     */
-    protected function getEntityRepository()
-    {
-        return $this->doctrine->getRepository($this->getEntityClass());
     }
 
     /**

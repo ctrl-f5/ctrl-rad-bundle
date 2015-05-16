@@ -14,8 +14,10 @@ class EntityServicePass implements CompilerPassInterface
 
         foreach ($taggedServices as $id => $tags) {
             $definition = $container->findDefinition($id);
-            if (!$definition->getArguments()) {
-                $definition->setArguments(array(
+
+            // inject doctrine
+            if (!$definition->hasMethodCall('setDoctrine')) {
+                $definition->addMethodCall('setDoctrine', array(
                     new Reference('doctrine.orm.entity_manager')
                 ));
             }
