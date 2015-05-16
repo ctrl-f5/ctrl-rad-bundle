@@ -157,7 +157,7 @@ abstract class CrudController extends AbstractController
 
         $paginator = $this->getEntityService()->paginate()->findAll($criteria);
 
-        return $this->render('CtrlRadBundle:crud:index.html.twig', array(
+        return $this->render($options['templates']['crud_index'], array(
             'paginator'     => $paginator,
             'filterActive'  => $filterActive,
             'options'       => $options,
@@ -202,7 +202,7 @@ abstract class CrudController extends AbstractController
             }
         }
 
-        return $this->render('CtrlRadBundle:crud:edit.html.twig', array(
+        return $this->render($options['templates']['crud_edit'], array(
             'entity'        => $entity,
             'form'          => $form->createView(),
             'options'       => $options,

@@ -33,6 +33,8 @@ class CtrlRadExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('app', $templates);
         $this->assertArrayHasKey('app_topbar_extra', $templates);
         $this->assertArrayHasKey('index_table', $templates);
+        $this->assertArrayHasKey('crud_index', $templates);
+        $this->assertArrayHasKey('crud_edit', $templates);
         $this->assertArrayHasKey('filter_elements', $templates);
         $this->assertArrayHasKey('form_elements', $templates);
         $this->assertArrayHasKey('form_buttons', $templates);

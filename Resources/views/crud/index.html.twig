@@ -9,7 +9,12 @@
     {{ page_title('crud.index.title'|trans({}, 'CtrlRadBundle')|format(options.label_entities|trans)) }}
 
     <nav class="navbar navbar-default">
-        <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{{ path(options.route_create) }}" role="button"><i class="fa fa-fw fa-plus-circle"></i> Add {{ options.label_entity|trans }}</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-left">
             {% if options.filter_enabled %}
             <li>
                 <a data-toggle="collapse" href="#application-index-filters" aria-expanded="false" aria-controls="application-index-filters">
@@ -17,11 +22,6 @@
                 </a>
             </li>
             {% endif %}
-        </ul>
-        <ul class="nav navbar-nav pull-right">
-            <li>
-                <a href="{{ path(options.route_create) }}" role="button"><i class="fa fa-fw fa-plus-circle"></i> Add {{ options.label_entity|trans }}</a>
-            </li>
         </ul>
     </nav>
 
