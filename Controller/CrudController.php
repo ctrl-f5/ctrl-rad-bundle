@@ -13,7 +13,8 @@ abstract class CrudController extends AbstractController
 
     protected $defaultCrudOptions = array(
         'label_entity'          => 'Entity',
-        'templates'             => array()
+        'templates'             => array(),
+        'view_vars'             => array()
     );
 
     /**
@@ -207,11 +208,13 @@ abstract class CrudController extends AbstractController
             }
         }
 
-        return $this->render($options['templates']['crud_edit'], array(
+        $viewVars = array_merge(array(
             'entity'        => $entity,
             'form'          => $form->createView(),
             'options'       => $options,
-        ));
+        ), $options['view_vars']);
+
+        return $this->render($options['templates']['crud_edit'], $viewVars);
     }
 
     protected function crudPrePersist($entity) {}
