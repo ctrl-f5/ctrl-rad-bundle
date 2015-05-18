@@ -1,5 +1,4 @@
 .idea
 .settings
 composer.lock
-vendor
-Resources/public/vendor
+./vendor
