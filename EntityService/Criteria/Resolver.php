@@ -37,7 +37,6 @@ class Resolver
     /**
      * @param QueryBuilder $queryBuilder
      * @param array $criteria
-     * @param string $rootAlias
      * @return $this
      */
     public function resolveCriteria(QueryBuilder $queryBuilder, array $criteria = array())
@@ -72,7 +71,8 @@ class Resolver
         $joins = array();
         $conditions = array();
         $parameters = array();
-        $paramCount = 0;
+        $paramCount = 1;
+        $paramAddedCount = 1;
 
         foreach ((array)$criteria as $key => $val) {
             $hasValue = is_string($key);
@@ -91,7 +91,8 @@ class Resolver
                         if ($config['has_named_param']) {
                             $parameters[$config['param_name']] = count($val) == 1 ? array_shift($val): $val[$config['param_name']];
                         } else {
-                            $parameters[] = array_shift($val);
+                            $parameters[$paramAddedCount] = array_shift($val);
+                            $paramAddedCount++;
                         }
                     }
                     array_pop($path);
@@ -115,6 +116,8 @@ class Resolver
     {
         $merged = array();
         foreach ($joins as $path) {
+            if (empty($path)) return $merged;
+
             $previous = $path[0];
             for ($i = 1; $i < count($path); $i++) {
                 $current = $path[$i];
@@ -162,7 +165,7 @@ class Resolver
         $parts = explode(' ', trim($expr, " ()"));
         $fieldPart = array_shift($parts);
         $path = explode('.', $fieldPart);
-        $parent = $path[count($path) - 2];
+        $parent = count($path) > 2 ? $path[count($path) - 2]: $path[0];
         $alias = end($path);
         $isProp = $hasValue || count($parts) > 1;
 
