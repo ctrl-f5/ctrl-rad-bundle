@@ -70,28 +70,28 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
         $result = $resolver->unpack(array('id' => 1));
         $this->assertEquals(array(
-            'root.id = ?0',
+            'root.id = ?1',
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1,
+            1 => 1,
         ), $result['parameters']);
 
         $result = $resolver->unpack(array('root.id' => 1));
         $this->assertEquals(array(
-            'root.id = ?0',
+            'root.id = ?1',
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1,
+            1 => 1,
         ), $result['parameters']);
 
         $result = $resolver->unpack(array('root.id' => 1, 'root.name' => 'tester'));
         $this->assertEquals(array(
-            'root.id = ?0',
-            'root.name = ?1',
+            'root.id = ?1',
+            'root.name = ?2',
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1,
-            1 => 'tester',
+            1 => 1,
+            2 => 'tester',
         ), $result['parameters']);
     }
 
@@ -135,24 +135,24 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
         $result = $resolver->unpack(array('id' => 1, 'name = :name' => 'tester'));
         $this->assertEquals(array(
-            'root.id = ?0',
+            'root.id = ?1',
             'root.name = :name',
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1,
+            1 => 1,
             'name' => 'tester',
         ), $result['parameters']);
 
         $result = $resolver->unpack(array('id' => 1, 'name = :name' => 'tester', 'parent' => 2));
         $this->assertEquals(array(
-            'root.id = ?0',
+            'root.id = ?1',
             'root.name = :name',
-            'root.parent = ?1',
+            'root.parent = ?2',
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1,
+            1 => 1,
             'name' => 'tester',
-            1 => 2,
+            2 => 2,
         ), $result['parameters']);
     }
 
@@ -215,10 +215,10 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
             'root.messages' => 'messages'
         ), $result['joins']);
         $this->assertEquals(array(
-            'messages.id = ?0'
+            'messages.id = ?1'
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1
+            1 => 1
         ), $result['parameters']);
 
         $result = $resolver->unpack(array('messages.user.id' => 1));
@@ -227,10 +227,10 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
             'messages.user' => 'user',
         ), $result['joins']);
         $this->assertEquals(array(
-            'user.id = ?0'
+            'user.id = ?1'
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1
+            1 => 1
         ), $result['parameters']);
 
         $result = $resolver->unpack(array(
@@ -244,12 +244,12 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
             'orders.client' => 'client',
         ), $result['joins']);
         $this->assertEquals(array(
-            'user.id = ?0',
-            'client.id = ?1',
+            'user.id = ?1',
+            'client.id = ?2',
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1,
-            1 => 2,
+            1 => 1,
+            2 => 2,
         ), $result['parameters']);
 
         $result = $resolver->unpack(array(
@@ -263,11 +263,11 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
             'orders.client' => 'client',
         ), $result['joins']);
         $this->assertEquals(array(
-            'user.id = ?0',
+            'user.id = ?1',
             'client.id = :client',
         ), $result['conditions']);
         $this->assertEquals(array(
-            0 => 1,
+            1 => 1,
             'client' => 2,
         ), $result['parameters']);
     }
