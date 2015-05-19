@@ -173,13 +173,18 @@ class Resolver
         $paramName = $hasNamedParam ? trim(end($parts), ':'): null;
 
         $comp = '=';
+        $condition = '';
         $requiresValue = true;
-        if (count($parts)) {
-            $condition = implode(' ', $parts);
-            $requiresValue = $hasNamedParam;
+        if ($isProp) {
+            if (count($parts)) {
+                $condition = implode(' ', $parts);
+                $requiresValue = $hasNamedParam;
+            } else {
+                $condition = $comp . ' ?' . $paramCount;
+                $paramCount++;
+            }
         } else {
-            $condition = $comp . ' ?' . $paramCount;
-            $paramCount++;
+            $requiresValue = false;
         }
 
         return array(
