@@ -4,199 +4,271 @@ namespace Ctrl\RadBundle\Test\EntityService\Criteria;
 
 use Ctrl\RadBundle\EntityService\Criteria\Resolver;
 
-class Resolver
+class ResolverTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var string
+     * @param $rootAlias
+     * @return Resolver
      */
-    protected $rootAlias;
-
-    public function __construct($rootAlias)
+    protected function getResolver($rootAlias)
     {
-        $this->rootAlias = $rootAlias;
+        return new Resolver($rootAlias);
     }
 
-    /**
-     * @return string
-     */
-    public function getRootAlias()
+    public function test_root_alias_set_on_construct()
     {
-        return $this->rootAlias;
+        $resolver = $this->getResolver("myRootAlias");
+
+        $this->assertEquals('myRootAlias', $resolver->getRootAlias());
     }
 
-    /**
-     * @param string $rootAlias
-     * @return $this
-     */
-    public function setRootAlias($rootAlias)
+    public function test_set_root_alias()
     {
-        $this->rootAlias = $rootAlias;
-        return $this;
+        $resolver = $this->getResolver("myRootAlias");
+
+        $resolver->setRootAlias('newAlias');
+        $this->assertEquals('newAlias', $resolver->getRootAlias());
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param array $criteria
-     * @return $this
-     */
-    public function resolveCriteria(QueryBuilder $queryBuilder, array $criteria = array())
+    public function test_unpack_conditions()
     {
-        $criteria = $this->unpack($criteria);
+        $resolver = $this->getResolver("root");
 
-        foreach ($criteria['joins']         as $join => $alias)     $queryBuilder->join($join, $alias);
-        foreach ($criteria['conditions']    as $where)              $queryBuilder->andWhere($where);
-        foreach ($criteria['parameters']    as $key => $value)      $queryBuilder->setParameter($key, $value);
+        $result = $resolver->unpack('id = 1');
+        $this->assertEquals(array(
+            'root.id = 1',
+        ), $result['conditions']);
 
-        return $this;
+        $result = $resolver->unpack('id = 1 and id IS NULL');
+        $this->assertEquals(array(
+            'root.id = 1',
+            'root.id IS NULL'
+        ), $result['conditions']);
+
+        $result = $resolver->unpack(array('id = 1', 'id IS NULL'));
+        $this->assertEquals(array(
+            'root.id = 1',
+            'root.id IS NULL'
+        ), $result['conditions']);
+
+        $result = $resolver->unpack('root.id = 1 and root.id IS NULL');
+        $this->assertEquals(array(
+            'root.id = 1',
+            'root.id IS NULL'
+        ), $result['conditions']);
+
+        $result = $resolver->unpack('root.id = 1 and (id IS NULL or root.active = false)');
+        $this->assertEquals(array(
+            'root.id = 1',
+            'root.id IS NULL or root.active = false'
+        ), $result['conditions']);
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param array $orderBy
-     * @return $this
-     */
-    public function resolveOrderBy(QueryBuilder $queryBuilder, array $orderBy = array())
+    public function test_unpack_conditions_with_parameters()
     {
-        foreach ($orderBy as $sortField => $order) $queryBuilder->addOrderBy($sortField, $order);
+        $resolver = $this->getResolver("root");
 
-        return $this;
+        $result = $resolver->unpack(array('id' => 1));
+        $this->assertEquals(array(
+            'root.id = ?1',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+        ), $result['parameters']);
+
+        $result = $resolver->unpack(array('root.id' => 1));
+        $this->assertEquals(array(
+            'root.id = ?1',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+        ), $result['parameters']);
+
+        $result = $resolver->unpack(array('root.id' => 1, 'root.name' => 'tester'));
+        $this->assertEquals(array(
+            'root.id = ?1',
+            'root.name = ?2',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+            2 => 'tester',
+        ), $result['parameters']);
     }
 
-    /**
-     * @param array|string $criteria
-     * @return array
-     */
-    public function unpack($criteria)
+    public function test_unpack_conditions_with_named_parameters()
     {
-        $joins = array();
-        $conditions = array();
-        $parameters = array();
-        $paramCount = 1;
-        $paramAddedCount = 1;
+        $resolver = $this->getResolver("root");
 
-        foreach ((array)$criteria as $key => $val) {
-            $hasValue = is_string($key);
-            $fieldConfig = $hasValue ? $key: $val;
-            $val = (array)$val;
+        $result = $resolver->unpack(array('id = :test' => 1));
+        $this->assertEquals(array(
+            'root.id = :test',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            'test' => 1,
+        ), $result['parameters']);
 
-            $expressions = $this->unpackFieldExpression($fieldConfig, $this->getRootAlias());
-            foreach ($expressions as $exr) {
-                $config = $this->getFieldConfig($exr, $hasValue, $paramCount);
-                $path = $config['path'];
+        $result = $resolver->unpack(array('id = :test' => array('test' => 1)));
+        $this->assertEquals(array(
+            'root.id = :test',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            'test' => 1,
+        ), $result['parameters']);
 
-                // add conditions and parameters
-                if ($config['is_property']) {
-                    $conditions[] = $config['field'];
-                    if ($config['requires_value']) {
-                        if ($config['has_named_param']) {
-                            $parameters[$config['param_name']] = count($val) == 1 ? array_shift($val): $val[$config['param_name']];
-                        } else {
-                            $parameters[$paramAddedCount] = array_shift($val);
-                            $paramAddedCount++;
-                        }
-                    }
-                    array_pop($path);
-                }
-
-                // add joins
-                $joins[] = $path;
-            }
-        }
-
-        $joins = $this->mergeJoinPaths($joins);
-
-        return array(
-            'joins' => $joins,
-            'conditions' => $conditions,
-            'parameters' => $parameters,
-        );
+        $result = $resolver->unpack(array(
+            'id = :test' => 1,
+            'name = :name' => 'tester',
+        ));
+        $this->assertEquals(array(
+            'root.id = :test',
+            'root.name = :name',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            'test' => 1,
+            'name' => 'tester',
+        ), $result['parameters']);
     }
 
-    protected function mergeJoinPaths($joins)
+    public function test_unpack_conditions_with_mixed_parameters()
     {
-        $merged = array();
-        foreach ($joins as $path) {
-            if (empty($path)) return $merged;
+        $resolver = $this->getResolver("root");
 
-            $previous = $path[0];
-            for ($i = 1; $i < count($path); $i++) {
-                $current = $path[$i];
-                $merged[$previous . '.' . $current] = $current;
-                $previous = $current;
-            }
-        }
+        $result = $resolver->unpack(array('id' => 1, 'name = :name' => 'tester'));
+        $this->assertEquals(array(
+            'root.id = ?1',
+            'root.name = :name',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+            'name' => 'tester',
+        ), $result['parameters']);
 
-        return $merged;
+        $result = $resolver->unpack(array('id' => 1, 'name = :name' => 'tester', 'parent' => 2));
+        $this->assertEquals(array(
+            'root.id = ?1',
+            'root.name = :name',
+            'root.parent = ?2',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+            'name' => 'tester',
+            2 => 2,
+        ), $result['parameters']);
     }
 
-    protected function unpackFieldExpression($expr, $rootAlias)
+    public function test_unpack_conditions_with_multiple_parameters_in_single_condition()
     {
-        $result = array();
-        $expr = str_replace(
-            array(' AND ', ' OR '),
-            array(' and ', ' or '),
-            trim(trim($expr), '()')
-        );
+        $resolver = $this->getResolver("root");
 
-        $parts = explode(' and ', $expr);
-        if (count($parts) > 1) {
-            foreach ($parts as $part) {
-                $fields = $this->unpackFieldExpression(trim($part), $rootAlias);
-                $result[] = $fields[0];
-            }
-            return $result;
-        }
+        $result = $resolver->unpack(array('id = :id AND name = :name' => array('id' => 1, 'name' => 'tester')));
+        $this->assertEquals(array(
+            'root.id = :id',
+            'root.name = :name',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            'id' => 1,
+            'name' => 'tester',
+        ), $result['parameters']);
 
-        for ($i = 0; $i < count($parts); $i++) {
-            if (strpos($parts[$i], $rootAlias) !== 0) $parts[$i] = $rootAlias . '.' . $parts[$i];
-        }
-
-        return $parts;
+        $result = $resolver->unpack(array('id = :id AND active = true' => array('id' => 1)));
+        $this->assertEquals(array(
+            'root.id = :id',
+            'root.active = true',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            'id' => 1,
+        ), $result['parameters']);
     }
 
-    /**
-     * @param string $expr
-     * @param bool $hasValue
-     * @param int &$paramCount
-     * @return array
-     */
-    protected function getFieldConfig($expr, $hasValue, &$paramCount = 0)
+    public function test_unpack_joins()
     {
-        $parts = explode(' ', trim($expr, " ()"));
-        $fieldPart = array_shift($parts);
-        $path = explode('.', $fieldPart);
-        $parent = count($path) > 2 ? $path[count($path) - 2]: $path[0];
-        $alias = end($path);
-        $isProp = $hasValue || count($parts) > 1;
+        $resolver = $this->getResolver("root");
 
-        $hasNamedParam = strpos($expr, ' :') !== false;
-        $paramName = $hasNamedParam ? trim(end($parts), ':'): null;
+        $result = $resolver->unpack(array('messages'));
+        $this->assertEquals(array(
+            'root.messages' => 'messages',
+        ), $result['joins']);
+        $this->assertEquals(array(), $result['conditions']);
 
-        $comp = '=';
-        $condition = '';
-        $requiresValue = true;
-        if ($isProp) {
-            if (count($parts)) {
-                $condition = implode(' ', $parts);
-                $requiresValue = $hasNamedParam;
-            } else {
-                $condition = $comp . ' ?' . $paramCount;
-                $paramCount++;
-            }
-        } else {
-            $requiresValue = false;
-        }
+        $result = $resolver->unpack(array('messages.user'));
+        $this->assertEquals(array(
+            'root.messages' => 'messages',
+            'messages.user' => 'user',
+        ), $result['joins']);
+        $this->assertEquals(array(), $result['conditions']);
 
-        return array(
-            'is_property' => $isProp,
-            'comparison' => $comp,
-            'alias' => $alias,
-            'parent' => $parent,
-            'path' => $path,
-            'requires_value' => $requiresValue,
-            'has_named_param' => $hasNamedParam,
-            'param_name' => $paramName,
-            'field' => $parent . '.' . $alias . ' ' . $condition,
-        );
+        $result = $resolver->unpack(array('orders.client.user'));
+        $this->assertEquals(array(
+            'root.orders' => 'orders',
+            'orders.client' => 'client',
+            'client.user' => 'user',
+        ), $result['joins']);
+        $this->assertEquals(array(), $result['conditions']);
+    }
+
+    public function test_unpack_joins_through_conditions()
+    {
+        $resolver = $this->getResolver("root");
+
+        $result = $resolver->unpack(array('messages.id' => 1));
+        $this->assertEquals(array(
+            'root.messages' => 'messages'
+        ), $result['joins']);
+        $this->assertEquals(array(
+            'messages.id = ?1'
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1
+        ), $result['parameters']);
+
+        $result = $resolver->unpack(array('messages.user.id' => 1));
+        $this->assertEquals(array(
+            'root.messages' => 'messages',
+            'messages.user' => 'user',
+        ), $result['joins']);
+        $this->assertEquals(array(
+            'user.id = ?1'
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1
+        ), $result['parameters']);
+
+        $result = $resolver->unpack(array(
+            'messages.user.id' => 1,
+            'orders.client.id' => 2,
+        ));
+        $this->assertEquals(array(
+            'root.messages' => 'messages',
+            'messages.user' => 'user',
+            'root.orders' => 'orders',
+            'orders.client' => 'client',
+        ), $result['joins']);
+        $this->assertEquals(array(
+            'user.id = ?1',
+            'client.id = ?2',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+            2 => 2,
+        ), $result['parameters']);
+
+        $result = $resolver->unpack(array(
+            'messages.user.id' => 1,
+            'orders.client.id = :client' => 2,
+        ));
+        $this->assertEquals(array(
+            'root.messages' => 'messages',
+            'messages.user' => 'user',
+            'root.orders' => 'orders',
+            'orders.client' => 'client',
+        ), $result['joins']);
+        $this->assertEquals(array(
+            'user.id = ?1',
+            'client.id = :client',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+            'client' => 2,
+        ), $result['parameters']);
     }
 }
