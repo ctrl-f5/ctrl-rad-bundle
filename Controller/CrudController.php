@@ -47,10 +47,11 @@ abstract class CrudController extends AbstractController
         if (isset($options['label_entity'])) {
             $routePrefix = isset($options['route_prefix']) ? $options['route_prefix']: '';
 
+            $entityNameCanonical = str_replace(' ', '_', strtolower($options['label_entity']));
             if (!isset($options['label_entities'])) $options['label_entities']  = $options['label_entity'] . 's';
-            if (!isset($options['route_index']))    $options['route_index']     = $routePrefix . strtolower($options['label_entity']) . '_index';
-            if (!isset($options['route_edit']))     $options['route_edit']      = $routePrefix . strtolower($options['label_entity']) . '_edit';
-            if (!isset($options['route_create']))   $options['route_create']    = $routePrefix . strtolower($options['label_entity']) . '_edit';
+            if (!isset($options['route_index']))    $options['route_index']     = $routePrefix . $entityNameCanonical . '_index';
+            if (!isset($options['route_edit']))     $options['route_edit']      = $routePrefix . $entityNameCanonical . '_edit';
+            if (!isset($options['route_create']))   $options['route_create']    = $routePrefix . $entityNameCanonical . '_edit';
         }
 
         return array_replace_recursive(

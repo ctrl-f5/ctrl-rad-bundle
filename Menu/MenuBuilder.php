@@ -23,7 +23,7 @@ class MenuBuilder extends ContainerAware
     {
         $menu = $this->factory->createItem('root');
 
-        $menu->setChildrenAttribute('id', 'sid-menu');
+        $menu->setChildrenAttribute('id', 'side-menu');
         $menu->setChildrenAttribute('class', 'nav');
 
         $eventDispatcher->dispatch(

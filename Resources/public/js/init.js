@@ -1,3 +1,15 @@
+$(function () {
+
+    /**
+     * Select2
+     */
+    $('.select2').select2();
+
+});
+
+/**
+ * google prettify syntax highlighter
+ */
 function google_code_prettify()
 {
     if (prettyPrint) {
