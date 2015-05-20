@@ -35,7 +35,8 @@ class Paginator extends \Doctrine\ORM\Tools\Pagination\Paginator
     }
 
     /**
-     * @return int
+     * @param int $size
+     * @return $this
      */
     public function setPageSize($size = 15)
     {
@@ -58,6 +59,21 @@ class Paginator extends \Doctrine\ORM\Tools\Pagination\Paginator
     public function getCurrentPage()
     {
         return $this->currentPage;
+    }
+
+    /**
+     * @param int $page
+     * @param int $pageSize
+     * @return $this
+     */
+    public function configure($page, $pageSize)
+    {
+        $this->currentPage = $page;
+        $this->pageSize = $pageSize;
+
+        $this->assertPageConfig();
+
+        return $this;
     }
 
     public function handleRequest(Request $request)

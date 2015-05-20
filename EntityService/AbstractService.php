@@ -47,12 +47,12 @@ abstract class AbstractService
     /**
      * @var int
      */
-    protected $resultOffset = 15;
+    protected $resultPage = 15;
 
     /**
      * @var int
      */
-    protected $resultLimit = 15;
+    protected $resultPageSize = 15;
 
     /**
      * @param ObjectManager|EntityManager $doctrine
@@ -120,15 +120,41 @@ abstract class AbstractService
     }
 
     /**
-     * @param int $offset
-     * @param int|null $limit
+     * @param bool $paginate
+     * @param int $offset only valid if $paginate is true
      * @return $this
      */
-    public function paginate($offset = 1, $limit = null)
+    public function findOneOrNull($paginate = false, $offset = 0)
+    {
+        $this->queryResultType = $paginate ? 'paginator': 'one_or_null';
+        $this->resultOffset = $offset;
+        $this->resultLimit = 1;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function findFirstOrNull()
+    {
+        $this->queryResultType = 'first_or_null';
+        $this->resultOffset = 0;
+        $this->resultLimit = 1;
+
+        return $this;
+    }
+
+    /**
+     * @param int $page
+     * @param int|null $pageSize
+     * @return $this
+     */
+    public function paginate($page = 1, $pageSize = null)
     {
         $this->queryResultType = 'paginator';
-        $this->resultOffset = $offset;
-        if ($limit) $this->resultLimit = $limit;
+        $this->resultPage = $page;
+        if ($pageSize) $this->resultPageSize = $pageSize;
 
         return $this;
     }
@@ -147,15 +173,19 @@ abstract class AbstractService
      * @param QueryBuilder $query
      * @return array|Paginator
      */
-    protected function assertQueryResult(QueryBuilder $query)
+    protected function assertQueryResult(QueryBuilder $queryBuilder)
     {
         $type = $this->getQueryResultType();
 
         switch ($type) {
+            case 'one_or_null':
+                return $queryBuilder->getQuery()->getOneOrNullResult();
+            case 'first_or_null':
+                return $queryBuilder->getQuery()->setMaxResults(1)->getOneOrNullResult();
             case 'paginator':
-                return $this->getPaginator($query);
+                return $this->getPaginator($queryBuilder, $this->resultPage, $this->resultPageSize);
             default:
-                return $query->getQuery()->getResult();
+                return $queryBuilder->getQuery()->getResult();
         }
     }
 
@@ -311,15 +341,18 @@ abstract class AbstractService
 
     /**
      * @param QueryBuilder $queryBuilder
-     * @param int|null $offset
-     * @param int|null $limit
+     * @param int $page
+     * @param int $pageSize
      * @param array $orderBy
      * @return Paginator
      */
-    protected function getPaginator(QueryBuilder $queryBuilder, $offset = null, $limit = null, array $orderBy = array())
+    protected function getPaginator(QueryBuilder $queryBuilder, $page = 1, $pageSize = 15, array $orderBy = array())
     {
         $this->criteriaResolver->resolveOrderBy($queryBuilder, $orderBy);
 
-        return new Paginator($queryBuilder, $limit, $offset);
+        $paginator = new Paginator($queryBuilder);
+        $paginator->configure($page, $pageSize);
+
+        return $paginator;
     }
 }

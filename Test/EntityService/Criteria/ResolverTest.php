@@ -271,4 +271,69 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
             'client' => 2,
         ), $result['parameters']);
     }
+
+    public function test_unpack_conditions_with_mixed_parameters_and_joins()
+    {
+        $resolver = $this->getResolver("root");
+
+        $result = $resolver->unpack(array(
+            'id' => 1,
+            'name = :name' => 'tester',
+            'relation',
+        ));
+        $this->assertEquals(array(
+            'root.id = ?1',
+            'root.name = :name',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+            'name' => 'tester',
+        ), $result['parameters']);
+        $this->assertEquals(array(
+            'root.relation' => 'relation',
+        ), $result['joins']);
+
+        $result = $resolver->unpack(array(
+            'relationOne',
+            'relationOne.test',
+            'id' => 1,
+            'name = :name' => 'tester',
+            'relationTwo',
+            'parent' => 2
+        ));
+        $this->assertEquals(array(
+            'root.id = ?1',
+            'root.name = :name',
+            'root.parent = ?2',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 1,
+            'name' => 'tester',
+            2 => 2,
+        ), $result['parameters']);
+        $this->assertEquals(array(
+            'root.relationOne' => 'relationOne',
+            'relationOne.test' => 'test',
+            'root.relationTwo' => 'relationTwo',
+        ), $result['joins']);
+    }
+
+    public function test_unpack_order_by()
+    {
+        $resolver = $this->getResolver("root");
+
+        $result = $resolver->unpack(array(
+            'id' => 'DESC',
+            'name',
+        ));
+        $this->assertEquals(array(
+            'root.id = ?1',
+        ), $result['conditions']);
+        $this->assertEquals(array(
+            1 => 'DESC',
+        ), $result['parameters']);
+        $this->assertEquals(array(
+            'root.name' => 'name',
+        ), $result['joins']);
+    }
 }

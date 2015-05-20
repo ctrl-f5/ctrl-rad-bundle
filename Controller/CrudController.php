@@ -75,6 +75,7 @@ abstract class CrudController extends AbstractController
             array(
                 'filter_enabled'    => false,
                 'filter_form'       => null,
+                'sort'              => array(),
                 'columns'           => array(
                     'id' => '#',
                 ),
@@ -157,7 +158,7 @@ abstract class CrudController extends AbstractController
             $formView = $form->createView();
         }
 
-        $paginator = $this->getEntityService()->paginate()->findAll($criteria);
+        $paginator = $this->getEntityService()->paginate()->findAll($criteria, $options['sort']);
 
         return $this->render($options['templates']['crud_index'], array(
             'paginator'     => $paginator,
