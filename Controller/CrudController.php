@@ -228,17 +228,18 @@ abstract class CrudController extends AbstractController
         /** @var FormInterface $child */
         foreach ($form as $child) {
             $field = $child->getName();
+            $fieldPath = str_replace('_', '.', $field);
             switch ($child->getConfig()->getType()->getName()) {
                 case 'text':
-                    $criteria[$field . ' LIKE :'.$field] = '%' . $child->getData() . '%';
+                    $criteria[$fieldPath . ' LIKE :'.$field] = '%' . $child->getData() . '%';
                     break;
                 case 'checkbox':
                     if ($child->getData()) {
-                        $criteria[$field] = true;
+                        $criteria[$fieldPath] = true;
                     }
                     break;
                 default:
-                    $criteria[$field] = $child->getData();
+                    $criteria[$fieldPath] = $child->getData();
             }
         }
 
