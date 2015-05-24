@@ -2,7 +2,9 @@
 
 namespace Ctrl\RadBundle\EntityService;
 
-class UserService extends AbstractService
+use Ctrl\Common\EntityService\AbstractDoctrineService;
+
+class UserService extends AbstractDoctrineService
 {
     /**
      * @return string

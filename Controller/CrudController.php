@@ -2,7 +2,7 @@
 
 namespace Ctrl\RadBundle\Controller;
 
-use Ctrl\RadBundle\EntityService\AbstractService;
+use Ctrl\Common\EntityService\AbstractDoctrineService;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +18,7 @@ abstract class CrudController extends AbstractController
     );
 
     /**
-     * @return AbstractService
+     * @return AbstractDoctrineService
      */
     abstract protected function getEntityService();
 
@@ -158,7 +158,7 @@ abstract class CrudController extends AbstractController
             $formView = $form->createView();
         }
 
-        $paginator = $this->getEntityService()->paginate()->findAll($criteria, $options['sort']);
+        $paginator = $this->getEntityService()->getFinder()->paginate()->find($criteria, $options['sort']);
 
         return $this->render($options['templates']['crud_index'], array(
             'paginator'     => $paginator,
@@ -187,7 +187,7 @@ abstract class CrudController extends AbstractController
         $entity         = $options['entity'];
 
         if ($id) {
-            $entity = $this->getEntityService()->findOne(array('id' => $id));
+            $entity = $this->getEntityService()->getFinder()->firstOrNull()->find(array('id' => $id));
             if (!$entity) {
                 $this->addFlash('error', sprintf('%s not found', $options['label_entity']));
                 return $this->redirect($this->generateUrl($options['route_index']));
