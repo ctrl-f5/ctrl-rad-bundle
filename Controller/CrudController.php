@@ -94,7 +94,7 @@ abstract class CrudController extends AbstractController
     {
         $entity = null;
         if ($id) {
-            $entity = $this->getEntityService()->findOne(array('id' => $id));
+            $entity = $this->getEntityService()->getFinder()->get($id);
         }
 
         return array_merge(
