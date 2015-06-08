@@ -2,7 +2,7 @@
 
 namespace Ctrl\RadBundle\Twig;
 
-use Ctrl\RadBundle\Tools\Paginator;
+use Ctrl\Common\Tools\Doctrine\Paginator;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
