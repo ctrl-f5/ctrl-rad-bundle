@@ -151,7 +151,7 @@ abstract class CrudController extends AbstractController
 
             if ($request->query->has($form->getName())) {
                 $filterActive = true;
-                $form->submit((array)$request->query->getIterator()['form']);
+                $form->submit((array)$request->query->getIterator()[$form->getName()]);
                 $criteria = $this->createFilterCriteria($form);
             }
 
@@ -159,6 +159,7 @@ abstract class CrudController extends AbstractController
         }
 
         $paginator = $this->getEntityService()->getFinder()->paginate()->find($criteria, $options['sort']);
+        $paginator->configureFromRequestParams($request->query->all());
 
         return $this->render($options['templates']['crud_index'], array(
             'paginator'     => $paginator,
@@ -221,6 +222,15 @@ abstract class CrudController extends AbstractController
 
     protected function crudPrePersist($entity) {}
 
+    protected function getPager(Request $request)
+    {
+        $pagerData = $request->query->get('pager');
+        return array(
+            'page' => isset($pagerData['page']) ? $pagerData['page']: 1,
+            'pageSize' => isset($pagerData['pageSize']) ? $pagerData['pageSize']: 15
+        );
+    }
+
     protected function createFilterCriteria(FormInterface $form)
     {
         $criteria = array();
@@ -231,7 +241,9 @@ abstract class CrudController extends AbstractController
             $fieldPath = str_replace('_', '.', $field);
             switch ($child->getConfig()->getType()->getName()) {
                 case 'text':
-                    $criteria[$fieldPath . ' LIKE :'.$field] = '%' . $child->getData() . '%';
+                    if ($child->getData()) {
+                        $criteria[$fieldPath . ' LIKE :' . $field] = '%' . $child->getData() . '%';
+                    }
                     break;
                 case 'checkbox':
                     if ($child->getData()) {
@@ -239,7 +251,9 @@ abstract class CrudController extends AbstractController
                     }
                     break;
                 default:
-                    $criteria[$fieldPath] = $child->getData();
+                    if ($child->getData()) {
+                        $criteria[$fieldPath] = $child->getData();
+                    }
             }
         }
 
