@@ -199,14 +199,28 @@ abstract class CrudController extends AbstractController
             if ($form->handleRequest($request)->isValid()) {
 
                 $entity = $form->getData();
-                $this->crudPrePersist($entity);
+                $context = array(
+                    'entity'        => $entity,
+                    'is_create'     => (bool)$id,
+                    'route'         => array(
+                        'route'         => $request->get('_route'),
+                        'params'        => $request->get('_route_params'),
+                    )
+                );
+
+                $result = $this->crudPrePersist($entity, $context);
+                if ($result instanceof Response) return $result;
+
                 $this->getEntityService()->persist($entity);
 
-                $routeParams = $request->get('_route_params');
-                $routeParams['id'] = $entity->getId();
+                $result = $this->crudPostPersist($entity, $context);
+                if ($result instanceof Response) return $result;
+
+                $context['route']['params']['id'] = $entity->getId();
+
                 return $this->redirect($this->generateUrl(
-                    $request->get('_route'),
-                    $routeParams
+                    $context['route']['route'],
+                    $context['route']['params']
                 ));
             }
         }
@@ -220,7 +234,15 @@ abstract class CrudController extends AbstractController
         return $this->render($options['templates']['crud_edit'], $viewVars);
     }
 
-    protected function crudPrePersist($entity) {}
+    protected function crudPrePersist($entity, array $context = array())
+    {
+        return null;
+    }
+
+    protected function crudPostPersist($entity, array $context = array())
+    {
+        return null;
+    }
 
     protected function getPager(Request $request)
     {
