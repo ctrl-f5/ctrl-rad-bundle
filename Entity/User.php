@@ -42,7 +42,7 @@ class User extends BaseUser
             $parts = explode(',', $roleString);
             foreach ($parts as $part) {
                 $subparts = explode('=', $part);
-                $roleNames[] = 'LDAP_' . strtoupper(trim(end($subparts)));
+                $roleNames[] = 'ROLE_LDAP_' . strtoupper(str_replace(' ', '_', trim(end($subparts))));
             }
         }
 
