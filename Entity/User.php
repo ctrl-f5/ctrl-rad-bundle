@@ -25,4 +25,29 @@ class User extends BaseUser
      * @Assert\Email()
      */
     protected $email;
+
+    /**
+     * @param string $roles
+     * @return $this
+     */
+    public function setLdapRoles($roles)
+    {
+        if (!is_array($roles)) {
+            $roles = array($roles);
+        }
+
+        $roleNames = array();
+
+        foreach ($roles as $roleString) {
+            $parts = explode(',', $roleString);
+            foreach ($parts as $part) {
+                $subparts = explode('=', $part);
+                $roleNames[] = 'LDAP_' . strtoupper(trim(end($subparts)));
+            }
+        }
+
+        array_unique($roleNames);
+
+        return $this->setRoles($roleNames);
+    }
 }
