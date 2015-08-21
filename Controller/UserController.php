@@ -91,9 +91,10 @@ class UserController extends CrudController
      * @Route("/edit/{id}", name="ctrl_rad_user_edit")
      * @param Request $request
      * @param int|null $id
+     * @param array|null $options
      * @return Response
      */
-    public function editAction(Request $request, $id = null)
+    public function editAction(Request $request, $id = null, $options = array())
     {
         return parent::editAction($request, $id);
     }
