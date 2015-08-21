@@ -174,9 +174,9 @@ abstract class CrudController extends AbstractController
      * @param int|null $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editAction(Request $request, $id = null)
+    public function editAction(Request $request, $id = null, $options = array())
     {
-        $options        = $this->configureEdit($id);
+        $options        = $this->configureEdit($id, $options);
 
         if ((!$id && $options['route_create'] === false) || ($id && $options['route_edit'] === false)) {
             throw $this->createNotFoundException('CRUD route disabled');

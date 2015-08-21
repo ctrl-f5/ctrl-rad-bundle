@@ -2,8 +2,6 @@
 
 namespace Ctrl\RadBundle\Menu;
 
-use Knp\Menu\FactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class SidebarMenuBuilder
