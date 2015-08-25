@@ -3,7 +3,15 @@ $(function () {
     /**
      * Select2
      */
-    $('.select2').select2();
+    $('.select2').each(function () {
+        var options = {};
+
+        if ($(this).attr('data-select2-tags') == 'true') {
+            options.tags = true;
+        }
+
+        $(this).select2(options);
+    });
 
 });
 
