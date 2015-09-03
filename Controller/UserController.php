@@ -83,7 +83,7 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
      * @param array|null $options
      * @return Response
      */
-    public function editAction(Request $request, $id = null, $options = array())
+    public function editAction(Request $request, $id = null)
     {
         $builder = $this->getCrudConfigBuilder();
 
