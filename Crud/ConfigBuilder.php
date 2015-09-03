@@ -142,6 +142,16 @@ class ConfigBuilder
         return $this;
     }
 
+    /**
+     * @param array $context
+     * @return $this
+     */
+    public function setContext(array $context = array())
+    {
+        $this->config['options']['context'] = $context;
+        return $this;
+    }
+
     public function setEntityId($id = null)
     {
         $this->config['options']['entity_id'] = $id;

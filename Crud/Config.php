@@ -42,6 +42,7 @@ class Config
             'filter_enabled'        => true,
             'filter_form'           => null,
             'form'                  => null,
+            'context'               => array(),
             'view_vars'             => array(),
             'columns'               => array(),
             'actions'               => array(),
