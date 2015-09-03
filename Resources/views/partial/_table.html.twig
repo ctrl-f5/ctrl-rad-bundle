@@ -1,7 +1,7 @@
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        {% for label in options.columns %}
+        {% for label in config.options.columns %}
             <th>{{ label|trans }}</th>
         {% endfor %}
         <th>{{ "crud.index.column.actions"|trans({}, 'CtrlRadBundle') }}</th>
@@ -10,14 +10,14 @@
     <tbody>
     {% for entity in paginator %}
     <tr>
-        {% for prop, label in options.columns %}
+        {% for prop, label in config.options.columns %}
         <td>
             {% include "CtrlRadBundle:partial:_value_render.html.twig" with { config: prop, parent: entity } only %}
         </td>
         {% endfor %}
         <td>
             {% spaceless %}
-            {% for action in options.actions %}
+            {% for action in config.options.actions %}
                 <a href="{{ action.route|call(entity) }}" class="btn btn-primary btn-sm {{ action.class }}">
                     {% if action.class %}<i class="fa fa-{{ action.icon }} fa-fw"></i>{% endif %}
                     {{ action.label|trans }}
@@ -28,7 +28,7 @@
     </tr>
     {% else %}
         <tr>
-            <td colspan="8">No {{ options.label_entities|trans }} found</td>
+            <td colspan="8">No {{ config.options.entity_label|trans }} found</td>
         </tr>
     {% endfor %}
     </tbody>

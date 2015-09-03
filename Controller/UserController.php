@@ -2,79 +2,42 @@
 
 namespace Ctrl\RadBundle\Controller;
 
-use Ctrl\RadBundle\Entity\User;
-use Ctrl\RadBundle\EntityService\AbstractService;
-use Ctrl\RadBundle\Form\UserEditType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Ctrl\Common\EntityService\DoctrineEntityServiceProviderInterface;
+use Ctrl\Common\EntityService\ServiceInterface;
+use Ctrl\Common\Traits\SymfonyPaginationRequestReader;
+use Ctrl\RadBundle\Crud\ConfigBuilder;
+use Ctrl\RadBundle\Crud\Crud;
+use Ctrl\RadBundle\Form\UserEditType;
 
 /**
  * @package Ctrl\RadBundle\Controller
  * @Route("/admin/user")
  */
-class UserController extends CrudController
+class UserController extends Controller implements DoctrineEntityServiceProviderInterface
 {
+    use SymfonyPaginationRequestReader;
+    use Crud;
+
     /**
-     * @return AbstractService
+     * @return ServiceInterface
      */
-    protected function getEntityService()
+    public function getEntityService()
     {
         return $this->get('ctrl_rad.entity.user');
     }
 
-    /**
-     * @param array $options
-     * @return array
-     */
-    protected function configureCrud(array $options = array())
+    public function configureCrudBuilder(ConfigBuilder $builder)
     {
-        return parent::configureCrud(array(
-            'label_entity'          => 'User',
-            'route_prefix'          => 'ctrl_rad_',
-            'templates'             => array(
-                'filter_elements'   => 'CtrlRadBundle:user:_filter.html.twig',
-            )
-        ));
-    }
-
-    /**
-     * @param array $options
-     * @return array
-     */
-    protected function configureIndex(array $options = array())
-    {
-        return parent::configureIndex(array(
-            'filter_form'       => $this->createFormBuilder(null, array('csrf_protection' => false))
-                ->add('username')
-                ->add('email')
-                ->add('enabled', 'checkbox')
-                ->add('locked', 'checkbox')
-                ->getForm(),
-            'columns'           => array(
-                'id'        => '#',
-                'username'  => 'Username',
-                'email'     => 'Email',
-                'enabled'   => 'Enabled',
-                'locked'    => 'Locked',
-            ),
-            'actions'           => array(
-                $this->configureButton(array(
-                    'label'         => 'Edit',
-                    'icon'          => 'edit',
-                    'class'         => 'primary',
-                    'route_name'    => 'ctrl_rad_user_edit'
-                )),
-            ),
-        ));
-    }
-
-    protected function configureEdit($id = null, array $options = array())
-    {
-        $config = parent::configureEdit($id, $options);
-        $config['form'] = $this->createForm(new UserEditType(), $config['entity']);
-
-        return $config;
+        $builder
+            ->setEntityService($this->getEntityService())
+            ->setEntityLabel('User')
+            ->setRoutePrefix('ctrl_rad_')
+        ;
+        return $builder;
     }
 
     /**
@@ -84,11 +47,37 @@ class UserController extends CrudController
      */
     public function indexAction(Request $request)
     {
-        return parent::indexAction($request);
+        $builder = $this->getCrudConfigBuilder()
+            ->setTemplate('filter_elements', 'CtrlRadBundle:user:_filter.html.twig')
+            ->setFilterForm($this->createFormBuilder(null, array('csrf_protection' => false))
+                ->add('username')
+                ->add('email')
+                ->add('enabled', 'checkbox')
+                ->add('locked', 'checkbox')
+                ->getForm())
+            ->setColumns(array(
+                'id'        => '#',
+                'username'  => 'Username',
+                'email'     => 'Email',
+                'enabled'   => 'Enabled',
+                'locked'    => 'Locked',
+            ))
+            ->setActions(array(
+                $this->configureButton(array(
+                    'label'         => 'Edit',
+                    'icon'          => 'edit',
+                    'class'         => 'primary',
+                    'route_name'    => 'ctrl_rad_user_edit'
+                )),
+            ))
+        ;
+
+        return $this->buildCrudIndex($builder)->execute($request);
     }
 
     /**
      * @Route("/edit/{id}", name="ctrl_rad_user_edit")
+     * @Route("/edit/{id}", name="ctrl_rad_user_create")
      * @param Request $request
      * @param int|null $id
      * @param array|null $options
@@ -96,6 +85,13 @@ class UserController extends CrudController
      */
     public function editAction(Request $request, $id = null, $options = array())
     {
-        return parent::editAction($request, $id);
+        $builder = $this->getCrudConfigBuilder();
+
+        $builder
+            ->setEntityId($id)
+            ->setForm($this->createForm(new UserEditType(), $builder->getEntity()))
+        ;
+
+        return $this->buildCrudEdit($builder)->execute($request);
     }
 }
