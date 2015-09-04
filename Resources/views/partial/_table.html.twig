@@ -17,12 +17,14 @@
         {% endfor %}
         <td>
             {% spaceless %}
-            {% for action in config.options.actions %}
-                <a href="{{ action.route|call(entity) }}" class="btn btn-primary btn-sm {{ action.class }}">
-                    {% if action.class %}<i class="fa fa-{{ action.icon }} fa-fw"></i>{% endif %}
-                    {{ action.label|trans }}
-                </a>
-            {% endfor %}
+                <div class="btn-group">
+                {% for action in config.options.actions %}
+                    <a href="{{ action.route|call(entity) }}" class="btn btn-primary btn-sm {{ action.class }}">
+                        {% if action.class %}<i class="fa fa-{{ action.icon }} fa-fw"></i>{% endif %}
+                        {{ action.label|trans }}
+                    </a>
+                {% endfor %}
+                </div>
             {% endspaceless %}
         </td>
     </tr>

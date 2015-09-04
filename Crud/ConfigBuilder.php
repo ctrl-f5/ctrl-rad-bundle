@@ -152,6 +152,10 @@ class ConfigBuilder
         return $this;
     }
 
+    /**
+     * @param int|null $id
+     * @return $this
+     */
     public function setEntityId($id = null)
     {
         $this->config['options']['entity_id'] = $id;
@@ -165,6 +169,9 @@ class ConfigBuilder
         return $this;
     }
 
+    /**
+     * @return null|int
+     */
     public function getEntityId()
     {
         if (isset($this->config['options']['entity_id'])) return $this->config['options']['entity_id'];
@@ -172,6 +179,10 @@ class ConfigBuilder
         return null;
     }
 
+    /**
+     * @param $entity
+     * @return $this
+     */
     public function setEntity($entity)
     {
         $this->config['options']['entity'] = $entity;
@@ -179,6 +190,9 @@ class ConfigBuilder
         return $this;
     }
 
+    /**
+     * @return null|object
+     */
     public function getEntity()
     {
         if (
@@ -196,6 +210,9 @@ class ConfigBuilder
         return null;
     }
 
+    /**
+     * @return Config
+     */
     public function buildConfig()
     {
         return new Config(
