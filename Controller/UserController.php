@@ -36,6 +36,7 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
             ->setEntityService($this->getEntityService())
             ->setEntityLabel('User')
             ->setRoutePrefix('ctrl_rad_')
+            ->setRoute('route_create', 'ctrl_rad_user_edit')
         ;
         return $builder;
     }
@@ -77,10 +78,8 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
 
     /**
      * @Route("/edit/{id}", name="ctrl_rad_user_edit")
-     * @Route("/edit/{id}", name="ctrl_rad_user_create")
      * @param Request $request
      * @param int|null $id
-     * @param array|null $options
      * @return Response
      */
     public function editAction(Request $request, $id = null)
