@@ -21,7 +21,6 @@ class EditAction extends AbstractAction
 
         /** @var FormInterface $form */
         $form                   = $options['form'];
-        $formView               = null;
         $entity                 = $options['entity'];
         $context['is_create']   = false;
         $context['route']       = array(
@@ -38,29 +37,32 @@ class EditAction extends AbstractAction
             $context['is_create'] = true;
         }
 
-        if ($request->isMethod('POST')) {
-            if ($form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $entity = $form->getData();
 
-                $entity = $form->getData();
+            if (isset($options['pre_persist'])) {
+                $result = call_user_func_array($options['pre_persist'], array($entity, $context));
+                if ($result instanceof Response) return $result;
+            }
 
-                if (isset($options['pre_persist'])) {
-                    $result = call_user_func_array($options['pre_persist'], array($entity, $context));
-                    if ($result instanceof Response) return $result;
-                }
+            $this->getEntityService()->persist($entity);
 
-                $this->getEntityService()->persist($entity);
+            if (isset($options['post_persist'])) {
+                $result = call_user_func_array($options['post_persist'], array($entity, $context));
+                if ($result instanceof Response) return $result;
+            }
+            $context['route']['params']['id'] = $entity->getId();
 
-                if (isset($options['post_persist'])) {
-                    $result = call_user_func_array($options['post_persist'], array($entity, $context));
-                    if ($result instanceof Response) return $result;
-                }
-                $context['route']['params']['id'] = $entity->getId();
-
+            if ($options['save_success_redirect']) {
                 return new RedirectResponse($this->router->generate(
-                    $context['route']['route'],
-                    $context['route']['params']
+                    $routes['route_index']
                 ));
             }
+
+            return new RedirectResponse($this->router->generate(
+                $context['route']['route'],
+                $context['route']['params']
+            ));
         }
 
         $viewVars = array_merge(array(

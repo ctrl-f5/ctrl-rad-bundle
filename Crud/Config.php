@@ -9,6 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Config
 {
+    const SAVE_SUCCESS_RELOAD   = 'reload';
+    const SAVE_SUCCESS_REDIRECT = 'redirect';
+
     protected $options = array();
 
     protected $routeConfig = array();
@@ -49,6 +52,9 @@ class Config
             'action_index'          => IndexAction::class,
             'action_create'         => EditAction::class,
             'action_edit'           => EditAction::class,
+            'save_success_redirect' => false,
+            'post_persist'          => null,
+            'pre_persist'           => null,
         ));
         $resolver->setRequired(array(
             'entity_service'

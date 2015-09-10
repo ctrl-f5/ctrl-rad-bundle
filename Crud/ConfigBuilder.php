@@ -124,7 +124,7 @@ class ConfigBuilder
      * @param array $columns
      * @return $this
      */
-    public function setColumns($columns = array())
+    public function setColumns(array $columns = array())
     {
         $this->config['options']['columns'] = $columns;
 
@@ -135,7 +135,7 @@ class ConfigBuilder
      * @param array $actions
      * @return $this
      */
-    public function setActions($actions = array())
+    public function setActions(array $actions = array())
     {
         $this->config['options']['actions'] = $actions;
 
@@ -197,8 +197,7 @@ class ConfigBuilder
     {
         if (
             !isset($this->config['options']['entity']) &&
-            isset($this->config['options']['entity_id']) &&
-            isset($this->config['options']['entity_service'])
+            isset($this->config['options']['entity_id'], $this->config['options']['entity_service'])
         ) {
             $this->config['options']['entity'] = $this->config['options']['entity_service']->getFinder()->get($this->config['options']['entity_id']);
         }
@@ -208,6 +207,39 @@ class ConfigBuilder
         }
 
         return null;
+    }
+
+    /**
+     * @param callable $callable
+     * @return $this
+     */
+    public function setPrePersist($callable)
+    {
+        $this->config['options']['pre_persist'] = $callable;
+
+        return $this;
+    }
+
+    /**
+     * @param callable $callable
+     * @return $this
+     */
+    public function setPostPersist($callable)
+    {
+        $this->config['options']['post_persist'] = $callable;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $redirect
+     * @return $this
+     */
+    public function redirectAfterPersist($redirect = true)
+    {
+        $this->config['options']['save_success_redirect'] = $redirect;
+
+        return $this;
     }
 
     /**
