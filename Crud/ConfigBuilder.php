@@ -131,6 +131,13 @@ class ConfigBuilder
         return $this;
     }
 
+    public function setSort(array $sort)
+    {
+        $this->config['options']['sort'] = $sort;
+
+        return $this;
+    }
+
     /**
      * @param array $actions
      * @return $this

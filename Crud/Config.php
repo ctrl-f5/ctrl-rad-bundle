@@ -48,6 +48,7 @@ class Config
             'context'               => array(),
             'view_vars'             => array(),
             'columns'               => array(),
+            'sort'                  => null,
             'actions'               => array(),
             'action_index'          => IndexAction::class,
             'action_create'         => EditAction::class,

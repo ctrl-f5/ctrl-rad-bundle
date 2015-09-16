@@ -48,7 +48,7 @@
         </nav>
 
         <div id="page-wrapper">
-            {% for type, flashMessages in app.session.flashBag %}
+            {% for type, flashMessages in app.session.flashBag.all %}
                 {% for msg in flashMessages %}
                     <div class="alert alert-{% if type == 'error' %}danger{% elseif type == 'success' %}success{% else %}info{% endif %} alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
