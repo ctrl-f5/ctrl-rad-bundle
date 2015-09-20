@@ -2,6 +2,7 @@
 
 namespace Ctrl\RadBundle\Crud\Action;
 
+use Ctrl\RadBundle\Crud\Config;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,6 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EditAction extends AbstractAction
 {
+    const SAVE_SUCCESS_RELOAD   = 'reload';
+    const SAVE_SUCCESS_REDIRECT = 'redirect';
+
     public function execute(Request $request, $id = null, array $context = array())
     {
         $options = $this->config->getOptions();
@@ -42,20 +46,20 @@ class EditAction extends AbstractAction
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $entity = $form->getData();
 
-            if (isset($options['pre_persist'])) {
+            if (isset($config['pre_persist'])) {
                 $result = call_user_func_array($options['pre_persist'], array($entity, $context));
                 if ($result instanceof Response) return $result;
             }
 
             $this->getEntityService()->persist($entity);
 
-            if (isset($options['post_persist'])) {
+            if (isset($config['post_persist'])) {
                 $result = call_user_func_array($options['post_persist'], array($entity, $context));
                 if ($result instanceof Response) return $result;
             }
             $context['route']['params']['id'] = $entity->getId();
 
-            if ($options['save_success_redirect']) {
+            if ($config['save_success_redirect']) {
                 return new RedirectResponse($this->router->generate(
                     $routes['index']
                 ));
@@ -86,7 +90,7 @@ class EditAction extends AbstractAction
             'template'                  => 'CtrlRadBundle:crud:edit.html.twig',
             'template_form_elements'    => 'CtrlRadBundle:partial:_form_elements.html.twig',
             'template_form_buttons'     => 'CtrlRadBundle:partial:_form_buttons.html.twig',
-            'save_success_redirect'     => false,
+            'save_success_redirect'     => self::SAVE_SUCCESS_REDIRECT,
             'post_persist'              => null,
             'pre_persist'               => null,
             'entity'                    => null,

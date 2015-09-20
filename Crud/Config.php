@@ -10,9 +10,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Config
 {
-    const SAVE_SUCCESS_RELOAD   = 'reload';
-    const SAVE_SUCCESS_REDIRECT = 'redirect';
-
     protected $options = array();
 
     protected $actionConfig = array();

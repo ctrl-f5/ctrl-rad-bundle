@@ -2,6 +2,7 @@
 
 namespace Ctrl\RadBundle\Crud\Action;
 
+use Ctrl\RadBundle\Crud\Config;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
