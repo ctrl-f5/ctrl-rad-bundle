@@ -90,12 +90,19 @@ passing this table into twig, there is a function available to render the table:
 
 will result in the following table:
 
+<<<<<<< HEAD
 
 | id  | Username  | Email          | Enabled | Locked | Actions |  
 | --- | --------- | -------------- | ------- | ------ | ------- |  
 | 1   | admin     | admin@site.com | true    | false  | edit    |  
 | 1   | user      | user@site.com  | true    | false  | edit    |  
 
+=======
+# | Username  | Email | Enabled | Locked | Actions
+--|-----------|-------|---------|--------|--------
+1 | admin | admin@site.com | true | false | edit
+1 | user | user@site.com | true | false | edit
+>>>>>>> dd72fe816f1add1e7410fe6ebae634ac3a66763a
 
 
 ### Connecting everything in the Controller with the `Ctrl\RadBundle\Crud\Crud` Trait
