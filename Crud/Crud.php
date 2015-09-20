@@ -26,14 +26,16 @@ trait Crud
     }
 
     /**
+     * @param string $actionClass
      * @return ConfigBuilder
      * @throws \Exception
      */
-    public function getCrudConfigBuilder()
+    public function getCrudConfigBuilder($actionClass)
     {
         $this->checkContainerAware();
 
         $builder = $this->container->get('ctrl_rad.crud.config_builder');
+        $builder->setActionClass($actionClass);
         $this->configureCrudBuilder($builder);
 
         return $builder;
@@ -52,43 +54,12 @@ trait Crud
      * @param ConfigBuilder $builder
      * @return AbstractAction
      */
-    public function buildCrudIndex($builder)
-    {
-        $builder->setCrudActionClass(IndexAction::class);
-        return $this->buildCrud($builder);
-    }
-
-    /**
-     * @param ConfigBuilder $builder
-     * @return AbstractAction
-     */
-    public function buildCrudCreate($builder)
-    {
-        $builder->setCrudActionClass(EditAction::class);
-        return $this->buildCrud($builder);
-    }
-
-    /**
-     * @param ConfigBuilder $builder
-     * @return AbstractAction
-     */
-    public function buildCrudEdit($builder)
-    {
-        $builder->setCrudActionClass(EditAction::class);
-        return $this->buildCrud($builder);
-    }
-
-    /**
-     * @param string $type
-     * @param Config|ConfigBuilder $config
-     * @return AbstractAction
-     */
-    public function buildCrud($config)
+    public function buildCrud($builder)
     {
         $this->checkContainerAware();
 
-        return $this->container
-            ->get('ctrl_rad.crud.action_factory')
-            ->create($config);
+        return $this->container->get('ctrl_rad.crud.action_factory')->create(
+            $builder->buildConfig()
+        );
     }
 }
