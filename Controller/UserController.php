@@ -2,6 +2,8 @@
 
 namespace Ctrl\RadBundle\Controller;
 
+use Ctrl\RadBundle\Crud\Action\EditAction;
+use Ctrl\RadBundle\Crud\Action\IndexAction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +50,7 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
      */
     public function indexAction(Request $request)
     {
-        $builder = $this->getCrudConfigBuilder();
+        $builder = $this->getCrudConfigBuilder(IndexAction::class);
         $builder
             ->setFilterForm($this->createFormBuilder(null, array('csrf_protection' => false))
                 ->add('username')
@@ -74,7 +76,7 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
                         ))
                 );
 
-        return $this->buildCrudIndex($builder)->execute($request);
+        return $this->buildCrud($builder)->execute($request);
     }
 
     /**
@@ -85,13 +87,13 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
      */
     public function editAction(Request $request, $id = null)
     {
-        $builder = $this->getCrudConfigBuilder();
+        $builder = $this->getCrudConfigBuilder(EditAction::class);
 
         $builder
             ->setEntityId($id)
             ->setForm($this->createForm(new UserEditType(), $builder->getEntity()))
         ;
 
-        return $this->buildCrudEdit($builder)->execute($request);
+        return $this->buildCrud($builder)->execute($request);
     }
 }

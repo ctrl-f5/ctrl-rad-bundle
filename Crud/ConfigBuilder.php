@@ -157,7 +157,7 @@ class ConfigBuilder
      * @param string $class
      * @return $this
      */
-    public function setCrudActionClass($class)
+    public function setActionClass($class)
     {
         $this->config['action_class'] = $class;
 

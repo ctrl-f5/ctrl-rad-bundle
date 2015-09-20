@@ -12,17 +12,21 @@ There is [a Fork available that implements this bundle][101] in the Symfony2 sta
 What's inside?
 --------------
 
-* A layout based on [StartBootstrap Admin 2][2] including:
+* __Layout__ based on [StartBootstrap Admin 2][2] including:
     - Twig Extensions for easy use of [Twitter Bootstrap][1] components suck as label and pagination.
     - easy configurable layout and templates for sidebar, topbar and breadcrumbs
     - [FOSUserBundle][102] template overrides
-* Basic configurable CrudController
-    - provides index and edit actions
+* __Basic configurable CRUD components__
+    - provided index and edit actions
     - index has a configurable grid with pagination and optional filtering
-* EntityService layer
+* __EntityService layer__
     - provides a layer between the controllers and doctrine to put business logic that doesn't fit in any entity
     - provides basic methods to fetch data, optionally filtered and sorted
     - find methods provide easy availability to pagination
+* __TableView__
+    - Configurable columns and row actions
+    - automatic pagination
+    - automatic filtering in CRUD index action
     
 SB Admin 2
 ----------
@@ -52,9 +56,21 @@ Twig Extensions
     - page_title: prints the html for a page title for bootstrap
     - pagination: prints the html for a pagination for bootstrap
     - is_type: check if the variable is of a certain type
+    - button and buttonGroup: render bootstrap buttons
+    - table: render a `TableView`
+    
+More to read
+------------
+
+* [Ctrl Common][201]
+* [Ctrl Rad Bundle][210]
+    - [docs][211]
 
 [1]:    http://getbootstrap.com/
 [2]:    http://startbootstrap.com/template-overviews/sb-admin-2/
 [3]:    http://bower.io/
 [101]:  https://github.com/ctrl-f5/symfony-standard
 [102]:  https://github.com/FriendsOfSymfony/FOSUserBundle
+[201]:  https://github.com/ctrl-f5/ctrl-common
+[210]:  https://github.com/ctrl-f5/ctrl-rad-bundle
+[211]:  https://github.com/ctrl-f5/ctrl-rad-bundle/blob/refactor-001/Resources/docs/index.md
