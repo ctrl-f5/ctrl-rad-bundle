@@ -1,44 +1,34 @@
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        {% for label in config.options.columns %}
+        {% for label in table.columnHeaders %}
             <th>{{ label|trans }}</th>
         {% endfor %}
-        <th>{{ "crud.index.column.actions"|trans({}, 'CtrlRadBundle') }}</th>
     </tr>
     </thead>
     <tbody>
-    {% for entity in paginator %}
+    {% for row in table.rows %}
     <tr>
-        {% for prop, label in config.options.columns %}
+        {% for col in row.columns %}
         <td>
-            {% include "CtrlRadBundle:partial:_value_render.html.twig" with { config: prop, parent: entity } only %}
+            {% include "CtrlRadBundle:partial:_value_render.html.twig" with { config: col.property, parent: row.data } only %}
         </td>
         {% endfor %}
-        <td>
-            {% spaceless %}
-                <div class="btn-group">
-                {% for action in config.options.actions %}
-                    <a href="{{ action.route|call(entity) }}" class="btn btn-primary btn-sm {{ action.class }}">
-                        {% if action.class %}<i class="fa fa-{{ action.icon }} fa-fw"></i>{% endif %}
-                        {{ action.label|trans }}
-                    </a>
-                {% endfor %}
-                </div>
-            {% endspaceless %}
-        </td>
+        {% if row.actions|length %}
+        <td>{{ buttonGroup(row.actions) }}</td>
+        {% endif %}
     </tr>
     {% else %}
         <tr>
-            <td colspan="8">No {{ config.options.entity_label|trans }} found</td>
+            <td colspan="{{ table.columnHeaders|length }}">No entries found</td>
         </tr>
     {% endfor %}
     </tbody>
-    {% if paginator.pageCount > 1 %}
+    {% if table.showPagination and table.data.pageCount > 1 %}
     <tfoot>
         <tr>
             <td colspan="8" class="text-center">
-                {{ pagination(paginator, app.request) }}
+                {{ pagination(table.data, app.request) }}
             </td>
         </tr>
     </tfoot>

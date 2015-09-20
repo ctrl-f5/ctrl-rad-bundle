@@ -36,7 +36,7 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
             ->setEntityService($this->getEntityService())
             ->setEntityLabel('User')
             ->setRoutePrefix('ctrl_rad_')
-            ->setRoute('route_create', 'ctrl_rad_user_edit')
+            ->setRoute('create', 'ctrl_rad_user_edit')
         ;
         return $builder;
     }
@@ -48,30 +48,31 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
      */
     public function indexAction(Request $request)
     {
-        $builder = $this->getCrudConfigBuilder()
-            ->setTemplate('filter_elements', 'CtrlRadBundle:user:_filter.html.twig')
+        $builder = $this->getCrudConfigBuilder();
+        $builder
             ->setFilterForm($this->createFormBuilder(null, array('csrf_protection' => false))
                 ->add('username')
                 ->add('email')
                 ->add('enabled', 'checkbox')
                 ->add('locked', 'checkbox')
-                ->getForm())
-            ->setColumns(array(
-                'id'        => '#',
-                'username'  => 'Username',
-                'email'     => 'Email',
-                'enabled'   => 'Enabled',
-                'locked'    => 'Locked',
-            ))
-            ->setActions(array(
-                $this->configureButton(array(
-                    'label'         => 'Edit',
-                    'icon'          => 'edit',
-                    'class'         => 'primary',
-                    'route_name'    => 'ctrl_rad_user_edit'
-                )),
-            ))
-        ;
+                ->getForm()
+            )
+                ->setTable(
+                    $builder->createTable()
+                        ->setColumns(array(
+                            'id'        => '#',
+                            'username'  => 'Username',
+                            'email'     => 'Email',
+                            'enabled'   => 'Enabled',
+                            'locked'    => 'Locked',
+                        ))->addAction(array(
+                            'label'         => 'Edit',
+                            'icon'          => 'edit',
+                            'class'         => 'primary',
+                            'route'         => 'ctrl_rad_user_edit',
+                            'route_params'  => function ($data) { return ['id' => $data->getId()]; },
+                        ))
+                );
 
         return $this->buildCrudIndex($builder)->execute($request);
     }

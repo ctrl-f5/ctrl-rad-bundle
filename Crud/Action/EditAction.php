@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EditAction extends AbstractAction
 {
@@ -14,14 +15,15 @@ class EditAction extends AbstractAction
     {
         $options = $this->config->getOptions();
         $routes = $this->config->getRoutes();
+        $config = $options['action_config'];
 
-        if ((!$id && $routes['route_create'] === false) || ($id && $routes['route_edit'] === false)) {
+        if ((!$id && $routes['create'] === false) || ($id && $routes['edit'] === false)) {
             throw new NotFoundHttpException('CRUD route disabled');
         }
 
         /** @var FormInterface $form */
-        $form                   = $options['form'];
-        $entity                 = $options['entity'];
+        $form                   = $config['form'];
+        $entity                 = $config['entity'];
         $context['is_create']   = false;
         $context['route']       = array(
             'route'     => $request->get('_route'),
@@ -32,7 +34,7 @@ class EditAction extends AbstractAction
             $entity = $this->getEntityService()->getFinder()->firstOrNull()->find(array('id' => $id));
             if (!$entity) {
                 $this->session->getFlashBag()->add('error', sprintf('%s not found', $options['entity_label']));
-                return new RedirectResponse($this->router->generate($routes['route_index']));
+                return new RedirectResponse($this->router->generate($routes['index']));
             }
             $context['is_create'] = true;
         }
@@ -55,7 +57,7 @@ class EditAction extends AbstractAction
 
             if ($options['save_success_redirect']) {
                 return new RedirectResponse($this->router->generate(
-                    $routes['route_index']
+                    $routes['index']
                 ));
             }
 
@@ -69,8 +71,29 @@ class EditAction extends AbstractAction
             'entity'        => $entity,
             'form'          => $form->createView(),
             'config'        => $this->config,
+            'options'       => $this->config->getOptions(),
+            'routes'        => $routes,
+            'action'        => $config,
         ), $options['view_vars']);
 
-        return $this->templating->renderResponse($this->config->getTemplateConfig()['crud_edit'], $viewVars);
+        return $this->templating->renderResponse($config['template'], $viewVars);
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefaults([
+            'template'                  => 'CtrlRadBundle:crud:edit.html.twig',
+            'template_form_elements'    => 'CtrlRadBundle:partial:_form_elements.html.twig',
+            'template_form_buttons'     => 'CtrlRadBundle:partial:_form_buttons.html.twig',
+            'save_success_redirect'     => false,
+            'post_persist'              => null,
+            'pre_persist'               => null,
+            'entity'                    => null,
+            'entity_id'                 => null,
+        ]);
+        $resolver->setRequired([
+            'form'
+        ]);
     }
 }

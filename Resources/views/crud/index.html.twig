@@ -1,23 +1,23 @@
 {% extends ctrl_rad_templates.app %}
 
 {% block breadcrumbs %}
-    <li><a href="{{ path(config.routeConfig.route_index) }}">{{ config.options.entity_label_plural|trans }}</a></li>
+    <li><a href="{{ path(routes.index) }}">{{ options.label_plural|trans }}</a></li>
 {% endblock %}
 
 {% block content %}
 
-    {{ page_title('crud.index.title'|trans({}, 'CtrlRadBundle')|format(config.options.entity_label_plural|trans)) }}
+    {{ page_title('crud.index.title'|trans({}, 'CtrlRadBundle')|format(options.label_plural|trans)) }}
 
     <nav class="navbar navbar-default">
         <ul class="nav navbar-nav navbar-right">
-            {% if config.routes.route_create %}
+            {% if routes.create %}
             <li>
-                <a href="{{ path(config.routes.route_create) }}" role="button"><i class="fa fa-fw fa-plus-circle"></i> Add {{ config.options.entity_label|trans }}</a>
+                <a href="{{ path(routes.create) }}" role="button"><i class="fa fa-fw fa-plus-circle"></i> Add {{ options.label|trans }}</a>
             </li>
             {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-left">
-            {% if config.options.filter_enabled %}
+            {% if action.filter_enabled %}
             <li>
                 <a data-toggle="collapse" href="#application-index-filters" aria-expanded="false" aria-controls="application-index-filters">
                     <i class="fa fa-fw fa-filter"></i> Filters
@@ -27,17 +27,17 @@
         </ul>
     </nav>
 
-    {% if config.options.filter_enabled %}
+    {% if action.filter_enabled %}
     <div class="collapse {{ (filterActive) ? 'in': '' }}" id="application-index-filters">
 
         <div class="well">
 
             <form method="get" novalidate="novalidate">
 
-                {% include config.templates.filter_elements with { config: config, form: form } only %}
+                {% include action.template_filter_form with { config: config, form: form } only %}
 
                 <button type="submit" class="btn btn-primary">Filter</button>
-                <a href="{{ path(config.routes.route_index) }}" class="btn btn-default">Clear</a>
+                <a href="{{ path(routes.index) }}" class="btn btn-default">Clear</a>
 
             </form>
 
@@ -49,7 +49,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
-                {% include config.templates.index_table with { config: config, paginator: paginator } only %}
+                {% include table.template with { table: table } only %}
             </div>
         </div>
     </div>

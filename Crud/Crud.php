@@ -3,6 +3,8 @@
 namespace Ctrl\RadBundle\Crud;
 
 use Ctrl\RadBundle\Crud\Action\AbstractAction;
+use Ctrl\RadBundle\Crud\Action\EditAction;
+use Ctrl\RadBundle\Crud\Action\IndexAction;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,6 +35,7 @@ trait Crud
 
         $builder = $this->container->get('ctrl_rad.crud.config_builder');
         $this->configureCrudBuilder($builder);
+
         return $builder;
     }
 
@@ -46,30 +49,33 @@ trait Crud
     }
 
     /**
-     * @param Config|ConfigBuilder $config
+     * @param ConfigBuilder $builder
      * @return AbstractAction
      */
-    public function buildCrudIndex($config)
+    public function buildCrudIndex($builder)
     {
-        return $this->buildCrud(AbstractAction::ACTION_INDEX, $config);
+        $builder->setCrudActionClass(IndexAction::class);
+        return $this->buildCrud($builder);
     }
 
     /**
-     * @param Config|ConfigBuilder $config
+     * @param ConfigBuilder $builder
      * @return AbstractAction
      */
-    public function buildCrudCreate($config)
+    public function buildCrudCreate($builder)
     {
-        return $this->buildCrud(AbstractAction::ACTION_CREATE, $config);
+        $builder->setCrudActionClass(EditAction::class);
+        return $this->buildCrud($builder);
     }
 
     /**
-     * @param Config|ConfigBuilder $config
+     * @param ConfigBuilder $builder
      * @return AbstractAction
      */
-    public function buildCrudEdit($config)
+    public function buildCrudEdit($builder)
     {
-        return $this->buildCrud(AbstractAction::ACTION_EDIT, $config);
+        $builder->setCrudActionClass(EditAction::class);
+        return $this->buildCrud($builder);
     }
 
     /**
@@ -77,28 +83,12 @@ trait Crud
      * @param Config|ConfigBuilder $config
      * @return AbstractAction
      */
-    public function buildCrud($type, $config)
+    public function buildCrud($config)
     {
         $this->checkContainerAware();
 
         return $this->container
             ->get('ctrl_rad.crud.action_factory')
-            ->create($type, $config);
-    }
-
-    protected function configureButton(array $options)
-    {
-        return array_merge(
-            array(
-                'type'      => 'a',
-                'label'     => 'action',
-                'icon'      => null,
-                'class'     => 'default',
-                'route'     => function ($entity) use ($options) {
-                    return $this->generateUrl($options['route_name'], array('id' => $entity->getId()));
-                }
-            ),
-            $options
-        );
+            ->create($config);
     }
 }

@@ -3,15 +3,16 @@
 namespace Ctrl\RadBundle\Crud;
 
 use Ctrl\Common\EntityService\ServiceInterface;
+use Ctrl\RadBundle\TableView\Table;
 use Symfony\Component\Form\FormInterface;
 
 class ConfigBuilder
 {
-    protected $config = array(
-        'options'   => array(),
-        'templates' => array(),
-        'route'     => array(),
-    );
+    protected $config = array();
+
+    protected $action = array();
+
+    protected $routes = array();
 
     /**
      * @param array $defaultOptions
@@ -22,6 +23,13 @@ class ConfigBuilder
             $this->config,
             $defaultOptions
         );
+
+        if (array_key_exists('action', $this->config)) {
+            $this->routes = $this->config['action'];
+        }
+        if (array_key_exists('routes', $this->config)) {
+            $this->routes = $this->config['routes'];
+        }
     }
 
     /**
@@ -29,9 +37,9 @@ class ConfigBuilder
      * @param string $template
      * @return $this
      */
-    public function setTemplate($name, $template)
+    public function setTemplate($template)
     {
-        $this->config['templates'][$name] = $template;
+        $this->action['template'] = $template;
 
         return $this;
     }
@@ -42,7 +50,7 @@ class ConfigBuilder
      */
     public function setEntityService(ServiceInterface $service)
     {
-        $this->config['options']['entity_service'] = $service;
+        $this->config['entity_service'] = $service;
 
         return $this;
     }
@@ -55,10 +63,10 @@ class ConfigBuilder
     public function setEntityLabel($single = null, $plural = null)
     {
         if (!is_null($single)) {
-            $this->config['options']['entity_label'] = $single;
+            $this->config['label'] = $single;
         }
         if (!is_null($plural)) {
-            $this->config['options']['entity_label_plural'] = $plural;
+            $this->config['label_plural'] = $plural;
         }
 
         return $this;
@@ -71,7 +79,7 @@ class ConfigBuilder
      */
     public function setRoute($name, $route)
     {
-        $this->config['route'][$name] = $route;
+        $this->routes[$name] = $route;
 
         return $this;
     }
@@ -82,7 +90,7 @@ class ConfigBuilder
      */
     public function setRoutePrefix($prefix)
     {
-        $this->config['route']['prefix'] = $prefix;
+        $this->routes['prefix'] = $prefix;
 
         return $this;
     }
@@ -93,7 +101,7 @@ class ConfigBuilder
      */
     public function setFilterEnabled($enabled)
     {
-        $this->config['options']['filter_enabled'] = $enabled;
+        $this->action['filter_enabled'] = $enabled;
 
         return $this;
     }
@@ -102,9 +110,14 @@ class ConfigBuilder
      * @param FormInterface $form
      * @return $this
      */
-    public function setFilterForm(FormInterface $form)
+    public function setFilterForm(FormInterface $form, $template = null)
     {
-        $this->config['options']['filter_form'] = $form;
+        $this->action['filter_form'] = $form;
+        $this->setFilterEnabled(true);
+
+        if ($template) {
+            $this->action['template_filter_form'] = $template;
+        }
 
         return $this;
     }
@@ -115,47 +128,50 @@ class ConfigBuilder
      */
     public function setForm(FormInterface $form)
     {
-        $this->config['options']['form'] = $form;
+        $this->action['form'] = $form;
 
         return $this;
     }
 
     /**
-     * @param array $columns
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setActionConfig($name, $value)
+    {
+        $this->action[$name] = $value;
+    }
+
+    /**
+     * @param Table $table
      * @return $this
      */
-    public function setColumns(array $columns = array())
+    public function setTable(Table $table)
     {
-        $this->config['options']['columns'] = $columns;
+        $this->action['table'] = $table;
 
         return $this;
     }
 
+    /**
+     * @param string $class
+     * @return $this
+     */
+    public function setCrudActionClass($class)
+    {
+        $this->config['action_class'] = $class;
+
+        return $this;
+    }
+
+    /**
+     * @param array $sort
+     * @return $this
+     */
     public function setSort(array $sort)
     {
-        $this->config['options']['sort'] = $sort;
+        $this->action['sort'] = $sort;
 
-        return $this;
-    }
-
-    /**
-     * @param array $actions
-     * @return $this
-     */
-    public function setActions(array $actions = array())
-    {
-        $this->config['options']['actions'] = $actions;
-
-        return $this;
-    }
-
-    /**
-     * @param array $context
-     * @return $this
-     */
-    public function setContext(array $context = array())
-    {
-        $this->config['options']['context'] = $context;
         return $this;
     }
 
@@ -165,11 +181,11 @@ class ConfigBuilder
      */
     public function setEntityId($id = null)
     {
-        $this->config['options']['entity_id'] = $id;
+        $this->action['entity_id'] = $id;
 
-        if ($id && isset($this->config['options']['entity_service'])) {
+        if ($id && isset($this->config['entity_service'])) {
             $this->setEntity(
-                $this->config['options']['entity_service']->getFinder()->get($id)
+                $this->config['entity_service']->getFinder()->get($id)
             );
         }
 
@@ -181,7 +197,7 @@ class ConfigBuilder
      */
     public function getEntityId()
     {
-        if (isset($this->config['options']['entity_id'])) return $this->config['options']['entity_id'];
+        if (isset($this->action['entity_id'])) return $this->action['entity_id'];
 
         return null;
     }
@@ -192,7 +208,7 @@ class ConfigBuilder
      */
     public function setEntity($entity)
     {
-        $this->config['options']['entity'] = $entity;
+        $this->action['entity'] = $entity;
 
         return $this;
     }
@@ -203,14 +219,14 @@ class ConfigBuilder
     public function getEntity()
     {
         if (
-            !isset($this->config['options']['entity']) &&
-            isset($this->config['options']['entity_id'], $this->config['options']['entity_service'])
+            !isset($this->action['entity']) &&
+            isset($this->action['entity_id'], $this->config['entity_service'])
         ) {
-            $this->config['options']['entity'] = $this->config['options']['entity_service']->getFinder()->get($this->config['options']['entity_id']);
+            $this->action['entity'] = $this->config['entity_service']->getFinder()->get($this->action['entity_id']);
         }
 
-        if (isset($this->config['options']['entity'])) {
-            return $this->config['options']['entity'];
+        if (isset($this->action['entity'])) {
+            return $this->action['entity'];
         }
 
         return null;
@@ -222,7 +238,7 @@ class ConfigBuilder
      */
     public function setPrePersist($callable)
     {
-        $this->config['options']['pre_persist'] = $callable;
+        $this->action['pre_persist'] = $callable;
 
         return $this;
     }
@@ -233,7 +249,7 @@ class ConfigBuilder
      */
     public function setPostPersist($callable)
     {
-        $this->config['options']['post_persist'] = $callable;
+        $this->action['post_persist'] = $callable;
 
         return $this;
     }
@@ -244,7 +260,7 @@ class ConfigBuilder
      */
     public function redirectAfterPersist($redirect = true)
     {
-        $this->config['options']['save_success_redirect'] = $redirect;
+        $this->action['save_success_redirect'] = $redirect;
 
         return $this;
     }
@@ -254,10 +270,13 @@ class ConfigBuilder
      */
     public function buildConfig()
     {
-        return new Config(
-            $this->config['options'],
-            $this->config['route'],
-            $this->config['templates']
-        );
+        $this->config['action_config'] = $this->action;
+        $this->config['routes'] = $this->routes;
+        return new Config($this->config);
+    }
+
+    public function createTable()
+    {
+        return new Table();
     }
 }

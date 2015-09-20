@@ -13,16 +13,11 @@ class Factory extends ContainerAware
      * @param Config|ConfigBuilder $config
      * @return AbstractAction
      */
-    public function create($type, $config)
+    public function create($config)
     {
         if ($config instanceof ConfigBuilder) $config = $config->buildConfig();
 
-        $options = $config->getOptions();
-        if (!isset($options[$type])) {
-            throw new \InvalidArgumentException(sprintf('unknown $type given: %s', $type));
-        }
-
-        $class = $options[$type];
+        $class = $config->getActionClass();
         if (!is_subclass_of($class, AbstractAction::class)) {
             throw new \InvalidArgumentException(sprintf('class %s does not extend %s', $class, AbstractAction::class));
         }
@@ -30,7 +25,6 @@ class Factory extends ContainerAware
         return new $class(
             $config,
             $this->container->get('router'),
-            $this->container->get('session'),
             $this->container->get('templating')
         );
     }

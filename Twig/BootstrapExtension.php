@@ -52,8 +52,10 @@ class BootstrapExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('page_title', array($this, 'pageTitle'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('pagination', array($this, 'pagination'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('page_title',  array($this, 'pageTitle'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('pagination',  array($this, 'pagination'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('button',      array($this, 'button'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('buttonGroup',      array($this, 'buttonGroup'), array('is_safe' => array('html'))),
         );
     }
 
@@ -112,6 +114,34 @@ class BootstrapExtension extends \Twig_Extension
                     <h1 class="page-header">$title</h1>
                 </div>
             </div>
+HTML;
+    }
+
+    public function button($config)
+    {
+        $path = $this->router->generate($config['route'], $config['route_params']);
+        $class = $config['class'];
+        $icon = $config['icon'] ? "<i class=\"fa fa-{$config['icon']} fa-fw\"></i> ": '';
+        $label = $icon . $this->translator->trans($config['label']);
+
+        return <<<HTML
+            <a href="$path" class="btn btn-primary btn-sm $class">$label</a>
+HTML;
+    }
+
+    public function buttonGroup($configs)
+    {
+        if (!count($configs)) {
+            return '';
+        }
+
+        $buttons = '';
+        foreach ($configs as $config) {
+            $buttons .= $this->button($config);
+        }
+
+        return <<<HTML
+            <div class="btn-group">$buttons</div>
 HTML;
     }
 }
