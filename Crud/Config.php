@@ -10,15 +10,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Config
 {
+    /**
+     * @var array
+     */
     protected $options = array();
 
+    /**
+     * @var array
+     */
     protected $actionConfig = array();
 
+    /**
+     * @var array
+     */
     protected $routeConfig = array();
 
-    protected $templateConfig = array();
-
-    public function __construct(array $config)
+    /**
+     * @param array $config
+     */
+    public function __construct($actionClass, array $config)
     {
         $optionsResolver = new OptionsResolver();
         $this->configureOptions($optionsResolver);
@@ -98,22 +108,6 @@ class Config
     public function getRoutes()
     {
         return $this->routeConfig;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTemplateConfig()
-    {
-        return $this->templateConfig;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTemplates()
-    {
-        return $this->templateConfig;
     }
 
     /**
