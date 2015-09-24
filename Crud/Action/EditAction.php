@@ -53,7 +53,7 @@ class EditAction extends AbstractAction
             $this->getEntityService()->persist($entity);
 
             if (isset($config['post_persist'])) {
-                $result = call_user_func_array($options['post_persist'], array($entity, $context));
+                $result = call_user_func_array($config['post_persist'], array($entity, $context));
                 if ($result instanceof Response) return $result;
             }
             $context['route']['params']['id'] = $entity->getId();
