@@ -26,6 +26,7 @@ class Config
     protected $routeConfig = array();
 
     /**
+     * @param string $actionClass
      * @param array $config
      */
     public function __construct($actionClass, array $config)
@@ -68,21 +69,6 @@ class Config
             'index'   => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_index'; },
             'edit'    => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_edit'; },
             'create'  => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_create'; },
-        ));
-    }
-
-    protected function configureTemplates(OptionsResolver $resolver)
-    {
-        $resolver->setRequired(array(
-            'base',
-            'app',
-            'app_topbar_extra',
-            'crud_index',
-            'index_table',
-            'crud_edit',
-            'filter_elements',
-            'form_elements',
-            'form_buttons',
         ));
     }
 

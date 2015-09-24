@@ -136,10 +136,13 @@ class ConfigBuilder
     /**
      * @param string $name
      * @param mixed $value
+     * @return $this
      */
     public function setActionConfig($name, $value)
     {
         $this->action[$name] = $value;
+
+        return $this;
     }
 
     /**
@@ -272,7 +275,7 @@ class ConfigBuilder
     {
         $this->config['action_config'] = $this->action;
         $this->config['routes'] = $this->routes;
-        return new Config($this->config);
+        return new Config($this->config['action_class'], $this->config);
     }
 
     public function createTable()

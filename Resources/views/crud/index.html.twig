@@ -6,7 +6,7 @@
 
 {% block content %}
 
-    {{ page_title('crud.index.title'|trans({}, 'CtrlRadBundle')|format(options.label_plural|trans)) }}
+    {{ page_title('crud.index.title'|trans|format(options.label_plural|trans)) }}
 
     <nav class="navbar navbar-default">
         <ul class="nav navbar-nav navbar-right">
