@@ -3,6 +3,8 @@
 namespace Ctrl\RadBundle\TableView;
 
 use Ctrl\Common\Tools\Doctrine\Paginator;
+use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class Table
 {
@@ -152,6 +154,7 @@ class Table
     public function getRows()
     {
         $rows = array();
+        $accessor = PropertyAccess::createPropertyAccessor();
 
         foreach ($this->data as $data) {
             // extract route params
@@ -162,9 +165,20 @@ class Table
                 }
                 $actions[] = $action;
             }
+
+            $values = [];
+            foreach ($this->columns as $col) {
+                try {
+                    $values[$col['property']] = $accessor->getValue($data, $col['property']);
+                } catch (UnexpectedTypeException $e) {
+                    $values[$col['property']] = null;
+                }
+            }
+
             $rows[] = array(
                 'data'      => $data,
                 'columns'   => $this->columns,
+                'values'    => $values,
                 'actions'   => $actions,
             );
         }

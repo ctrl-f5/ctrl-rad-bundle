@@ -9,9 +9,9 @@
     <tbody>
     {% for row in table.rows %}
     <tr>
-        {% for col in row.columns %}
+        {% for value in row.values %}
         <td>
-            {% include "CtrlRadBundle:partial:_value_render.html.twig" with { config: col.property, parent: row.data } only %}
+            {% include "CtrlRadBundle:partial:_value_render.html.twig" with { value: value } only %}
         </td>
         {% endfor %}
         {% if row.actions|length %}
