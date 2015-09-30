@@ -33,7 +33,6 @@ class ConfigBuilder
     }
 
     /**
-     * @param string $name
      * @param string $template
      * @return $this
      */

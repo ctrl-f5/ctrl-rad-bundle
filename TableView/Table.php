@@ -199,6 +199,7 @@ class Table
                 'label'         => 'action',
                 'icon'          => null,
                 'class'         => 'default',
+                'attributes'    => [],
                 'route_params'  => [],
             ),
             $config

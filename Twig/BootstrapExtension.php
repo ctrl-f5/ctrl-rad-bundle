@@ -129,9 +129,16 @@ HTML;
         $class = $config['class'];
         $icon = $config['icon'] ? "<i class=\"fa fa-{$config['icon']} fa-fw\"></i> ": '';
         $label = $icon . $this->translator->trans($config['label']);
+        $attributes = implode(' ', array_map(
+            function ($key, $val) {
+                return sprintf('%s="%s"', $key, $val);
+            },
+            array_keys($config['attributes']),
+            $config['attributes']
+        ));
 
         return <<<HTML
-            <a href="$path" class="btn btn-sm btn-$class">$label</a>
+            <a href="$path" class="btn btn-sm btn-$class" $attributes>$label</a>
 HTML;
     }
 
