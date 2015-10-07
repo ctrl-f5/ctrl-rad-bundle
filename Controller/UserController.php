@@ -91,7 +91,13 @@ class UserController extends Controller implements DoctrineEntityServiceProvider
 
         $builder
             ->setEntityId($id)
-            ->setForm($this->createForm(new UserEditType(), $builder->getEntity()))
+            ->setForm($this->createForm(new UserEditType(), $builder->getEntity(), [
+                'role_choices' => array_merge([
+                    'ROLE_USER'             => 'USER',
+                    'ROLE_ADMIN'            => 'ADMIN',
+                    'ROLE_SUPER_ADMIN'      => 'SUPER_ADMIN',
+                ], $this->get('doctrine')->getRepository('CtrlRadBundle:User')->getKnownRoles(true))
+            ]))
         ;
 
         return $this->buildCrud($builder)->execute($request);

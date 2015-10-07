@@ -34,6 +34,11 @@ class Table
     protected $enablePaginator = true;
 
     /**
+     * @var callable|null
+     */
+    protected $rowProcessor;
+
+    /**
      * @param array $data
      * @return $this
      */
@@ -155,6 +160,7 @@ class Table
     {
         $rows = array();
         $accessor = PropertyAccess::createPropertyAccessor();
+        $rowProcessor = $this->getRowProcessor();
 
         foreach ($this->data as $data) {
             // extract route params
@@ -175,12 +181,16 @@ class Table
                 }
             }
 
-            $rows[] = array(
+            $row = array(
                 'data'      => $data,
                 'columns'   => $this->columns,
                 'values'    => $values,
                 'actions'   => $actions,
             );
+
+            if ($rowProcessor) $row = $rowProcessor($row, $this);
+
+            $rows[] = $row;
         }
 
         return $rows;
@@ -207,7 +217,18 @@ class Table
      */
     public function addAction($config)
     {
-        $this->actions[] = array_merge(
+        $this->actions[] = $this->createActionConfig($config);
+
+        return $this;
+    }
+
+    /**
+     * @param array $config
+     * @return array
+     */
+    public function createActionConfig(array $config = array())
+    {
+        return array_merge(
             array(
                 'type'          => 'a',
                 'label'         => 'action',
@@ -218,7 +239,23 @@ class Table
             ),
             $config
         );
+    }
 
+    /**
+     * @return callable|null
+     */
+    public function getRowProcessor()
+    {
+        return $this->rowProcessor;
+    }
+
+    /**
+     * @param callable|null $rowProcessor
+     * @return $this
+     */
+    public function setRowProcessor($rowProcessor)
+    {
+        $this->rowProcessor = $rowProcessor;
         return $this;
     }
 }

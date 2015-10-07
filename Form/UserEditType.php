@@ -18,11 +18,7 @@ class UserEditType extends AbstractType
             ->add('expired')
             ->add('credentialsExpired')
             ->add('roles', 'choice', array(
-                'choices' => array(
-                    'ROLE_USER'         => 'ROLE_USER',
-                    'ROLE_ADMIN'        => 'ROLE_ADMIN',
-                    'ROLE_SUPER_ADMIN'  => 'ROLE_SUPER_ADMIN',
-                ),
+                'choices' => $options['role_choices'],
                 'multiple' => true,
                 'required' => true,
                 'attr' => array('class' => 'select2'),
@@ -36,7 +32,12 @@ class UserEditType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Ctrl\\RadBundle\\Entity\\User',
+            'data_class'    => 'Ctrl\\RadBundle\\Entity\\User',
+            'role_choices'  => [
+                'ROLE_USER'         => 'USER',
+                'ROLE_ADMIN'        => 'ADMIN',
+                'ROLE_SUPER_ADMIN'  => 'SUPER_ADMIN',
+            ]
         ));
     }
 

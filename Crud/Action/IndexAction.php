@@ -2,6 +2,7 @@
 
 namespace Ctrl\RadBundle\Crud\Action;
 
+use Ctrl\Common\Tools\Doctrine\Paginator;
 use Ctrl\RadBundle\Crud\Config;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class IndexAction extends AbstractAction
         }
 
         $filterActive   = false;
-        $criteria       = array();
+        $criteria       = $config['default_criteria'];
         $form           = null;
         $formView       = null;
 
@@ -38,9 +39,13 @@ class IndexAction extends AbstractAction
             $formView = $form->createView();
         }
 
-        $paginator = $this->getEntityService()->getFinder()->paginate()->find(
+        $queryBuilder = $this->getEntityService()->getFinder()->queryBuilder()->find(
             $criteria, $config['sort']
         );
+        if (is_callable($config['query_builder'])) {
+            $config['query_builder']($queryBuilder);
+        }
+        $paginator = new Paginator($queryBuilder);
         $paginator->configureFromRequestParams($request->query->all());
 
         $config['table']->setData($paginator);
@@ -65,6 +70,8 @@ class IndexAction extends AbstractAction
             'filter_form'           => null,
             'filter_enabled'        => false,
             'table'                 => null,
+            'default_criteria'      => array(),
+            'query_builder'         => null,
             'sort'                  => array(),
         ));
     }
