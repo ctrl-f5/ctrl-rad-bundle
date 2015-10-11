@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Ctrl\Common\EntityService\DoctrineEntityServiceProviderInterface;
+use Ctrl\Common\EntityService\ServiceProviderInterface;
 use Ctrl\Common\EntityService\ServiceInterface;
 use Ctrl\Common\Traits\SymfonyPaginationRequestReader;
 use Ctrl\RadBundle\Crud\ConfigBuilder;
@@ -17,7 +17,7 @@ use Ctrl\RadBundle\Form\UserEditType;
  * @package Ctrl\RadBundle\Controller
  * @Route("/admin/user")
  */
-class UserController extends Controller implements DoctrineEntityServiceProviderInterface
+class UserController extends Controller implements ServiceProviderInterface
 {
     use SymfonyPaginationRequestReader;
     use Crud;

@@ -35,7 +35,7 @@ class IndexAction extends AbstractAction
         }
 
         $sort = is_array($options['sort']) ? $options['sort']: array();
-        $paginator = $this->getEntityService()->getFinder()->paginate()->find($criteria, $sort);
+        $paginator = $this->getEntityService()->getFinder()->find($criteria, $sort)->getPaginator();
         $paginator->configureFromRequestParams($request->query->all());
 
         return $this->templating->renderResponse($this->config->getTemplateConfig()['crud_index'], array(
