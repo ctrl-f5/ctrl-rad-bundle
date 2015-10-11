@@ -4,89 +4,71 @@ namespace Ctrl\RadBundle\Crud;
 
 use Ctrl\RadBundle\Crud\Action\EditAction;
 use Ctrl\RadBundle\Crud\Action\IndexAction;
+use Ctrl\RadBundle\TableView\Table;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Config
 {
-    const SAVE_SUCCESS_RELOAD   = 'reload';
-    const SAVE_SUCCESS_REDIRECT = 'redirect';
-
+    /**
+     * @var array
+     */
     protected $options = array();
 
+    /**
+     * @var array
+     */
+    protected $actionConfig = array();
+
+    /**
+     * @var array
+     */
     protected $routeConfig = array();
 
-    protected $templateConfig = array();
-
-    public function __construct(array $options, array $routeConfig, array $templateConfig = array())
+    /**
+     * @param string $actionClass
+     * @param array $config
+     */
+    public function __construct($actionClass, array $config)
     {
         $optionsResolver = new OptionsResolver();
         $this->configureOptions($optionsResolver);
-        $this->options = $optionsResolver->resolve($options);
+        $this->options = $optionsResolver->resolve($config);
+
+        $this->actionConfig = $config['action_config'];
 
         $optionsResolver = new OptionsResolver();
         $this->configureRoutes($optionsResolver);
-        $this->routeConfig = $optionsResolver->resolve($routeConfig);
-
-        $optionsResolver = new OptionsResolver();
-        $this->configureTemplates($optionsResolver);
-        $this->templateConfig = $optionsResolver->resolve($templateConfig);
+        $this->routeConfig = $optionsResolver->resolve($config['routes']);
     }
 
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'entity_label'          => 'Entity',
-            'entity_label_plural'   => function (Options $options) {
-                return $options['entity_label'] . 's';
+            'label'             => 'Entity',
+            'label_plural'      => function (Options $options) {
+                return $options['label'] . 's';
             },
-            'entity'                => null,
-            'entity_id'             => null,
-            'filter_enabled'        => true,
-            'filter_form'           => null,
-            'form'                  => null,
-            'context'               => array(),
-            'view_vars'             => array(),
-            'columns'               => array(),
-            'sort'                  => null,
-            'actions'               => array(),
-            'action_index'          => IndexAction::class,
-            'action_create'         => EditAction::class,
-            'action_edit'           => EditAction::class,
-            'save_success_redirect' => false,
-            'post_persist'          => null,
-            'pre_persist'           => null,
+            'view_vars'         => array(),
+            'action_config'     => array(),
+            'routes'            => array(),
         ));
         $resolver->setRequired(array(
-            'entity_service'
+            'entity_service',
+            'action_class',
         ));
         $resolver->setAllowedTypes('entity_service', '\Ctrl\Common\EntityService\ServiceInterface');
     }
 
     protected function configureRoutes(OptionsResolver $resolver)
     {
-        $entityNameCanonical = str_replace(' ', '_', strtolower($this->options['entity_label']));
+        $entityNameCanonical = str_replace(' ', '_', strtolower($this->options['label']));
 
         $resolver->setDefaults(array(
             'prefix' => '',
-            'route_index'   => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_index'; },
-            'route_edit'    => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_edit'; },
-            'route_create'  => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_create'; },
-        ));
-    }
-
-    protected function configureTemplates(OptionsResolver $resolver)
-    {
-        $resolver->setRequired(array(
-            'base',
-            'app',
-            'app_topbar_extra',
-            'crud_index',
-            'index_table',
-            'crud_edit',
-            'filter_elements',
-            'form_elements',
-            'form_buttons',
+            'index'   => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_index'; },
+            'edit'    => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_edit'; },
+            'create'  => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_create'; },
         ));
     }
 
@@ -115,18 +97,23 @@ class Config
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getTemplateConfig()
+    public function getActionClass()
     {
-        return $this->templateConfig;
+        return $this->options['action_class'];
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getTemplates()
+    public function getActionConfig()
     {
-        return $this->templateConfig;
+        return $this->options['action_config'];
+    }
+
+    public function resolveCrudActionConfig(OptionsResolver $resolver)
+    {
+        $this->options['action_config'] = $resolver->resolve($this->options['action_config']);
     }
 }

@@ -1,19 +1,19 @@
 {% extends ctrl_rad_templates.app %}
 
 {% block breadcrumbs %}
-    <li><a href="{{ path(config.routes.route_index) }}">{{ config.options.entity_label_plural|trans }}</a></li>
+    <li><a href="{{ path(routes.index) }}">{{ options.label_plural|trans }}</a></li>
     <li><a href="#">{{ "edit"|trans }}</a></li>
 {% endblock %}
 
 {% block content %}
 
-    {{ page_title(((entity) ? 'Manage' : 'Create New' ) ~ ' ' ~ config.options.entity_label|trans) }}
+    {{ page_title(((entity) ? 'Manage' : 'Create New' ) ~ ' ' ~ options.label|trans) }}
 
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
-    {% include config.templates.form_elements with { config: config, form: form } only %}
+    {% include action.template_form_elements with { config: config, form: form } only %}
 
-    {% include config.templates.form_buttons with { config: config, form: form } only %}
+    {% include action.template_form_buttons with { route_back: routes.index, form: form } only %}
 
     {{ form_end(form) }}
 

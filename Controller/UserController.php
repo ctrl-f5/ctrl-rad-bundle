@@ -2,6 +2,8 @@
 
 namespace Ctrl\RadBundle\Controller;
 
+use Ctrl\RadBundle\Crud\Action\EditAction;
+use Ctrl\RadBundle\Crud\Action\IndexAction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,7 +38,7 @@ class UserController extends Controller implements ServiceProviderInterface
             ->setEntityService($this->getEntityService())
             ->setEntityLabel('User')
             ->setRoutePrefix('ctrl_rad_')
-            ->setRoute('route_create', 'ctrl_rad_user_edit')
+            ->setRoute('create', 'ctrl_rad_user_edit')
         ;
         return $builder;
     }
@@ -48,32 +50,33 @@ class UserController extends Controller implements ServiceProviderInterface
      */
     public function indexAction(Request $request)
     {
-        $builder = $this->getCrudConfigBuilder()
-            ->setTemplate('filter_elements', 'CtrlRadBundle:user:_filter.html.twig')
+        $builder = $this->getCrudConfigBuilder(IndexAction::class);
+        $builder
             ->setFilterForm($this->createFormBuilder(null, array('csrf_protection' => false))
                 ->add('username')
                 ->add('email')
                 ->add('enabled', 'checkbox')
                 ->add('locked', 'checkbox')
-                ->getForm())
-            ->setColumns(array(
-                'id'        => '#',
-                'username'  => 'Username',
-                'email'     => 'Email',
-                'enabled'   => 'Enabled',
-                'locked'    => 'Locked',
-            ))
-            ->setActions(array(
-                $this->configureButton(array(
-                    'label'         => 'Edit',
-                    'icon'          => 'edit',
-                    'class'         => 'primary',
-                    'route_name'    => 'ctrl_rad_user_edit'
-                )),
-            ))
-        ;
+                ->getForm()
+            )
+                ->setTable(
+                    $builder->createTable()
+                        ->setColumns(array(
+                            'id'        => '#',
+                            'username'  => 'Username',
+                            'email'     => 'Email',
+                            'enabled'   => 'Enabled',
+                            'locked'    => 'Locked',
+                        ))->addAction(array(
+                            'label'         => 'Edit',
+                            'icon'          => 'edit',
+                            'class'         => 'primary',
+                            'route'         => 'ctrl_rad_user_edit',
+                            'route_params'  => function ($data) { return ['id' => $data->getId()]; },
+                        ))
+                );
 
-        return $this->buildCrudIndex($builder)->execute($request);
+        return $this->buildCrud($builder)->execute($request);
     }
 
     /**
@@ -84,13 +87,19 @@ class UserController extends Controller implements ServiceProviderInterface
      */
     public function editAction(Request $request, $id = null)
     {
-        $builder = $this->getCrudConfigBuilder();
+        $builder = $this->getCrudConfigBuilder(EditAction::class);
 
         $builder
             ->setEntityId($id)
-            ->setForm($this->createForm(new UserEditType(), $builder->getEntity()))
+            ->setForm($this->createForm(new UserEditType(), $builder->getEntity(), [
+                'role_choices' => array_merge([
+                    'ROLE_USER'             => 'USER',
+                    'ROLE_ADMIN'            => 'ADMIN',
+                    'ROLE_SUPER_ADMIN'      => 'SUPER_ADMIN',
+                ], $this->get('doctrine')->getRepository('CtrlRadBundle:User')->getKnownRoles(true))
+            ]))
         ;
 
-        return $this->buildCrudEdit($builder)->execute($request);
+        return $this->buildCrud($builder)->execute($request);
     }
 }

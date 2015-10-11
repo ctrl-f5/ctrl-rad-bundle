@@ -15,7 +15,6 @@ services:
 
     ctrl_rad.crud.config_builder:
         class: Ctrl\RadBundle\Crud\ConfigBuilder
-        arguments: [ %ctrl_rad.config% ]
 
     ctrl_rad.crud.action_factory:
         class: Ctrl\RadBundle\Crud\Action\Factory

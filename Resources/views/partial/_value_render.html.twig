@@ -1,18 +1,20 @@
 {% spaceless %}
-{% if config|is_type('string') %}
-
-    {% set val = attribute(parent, config) %}
-    {% if val|is_type('bool') %}
-        {{ val|label }}
-    {% elseif val|is_type('datetime') %}
-        {{ val|date }}
-    {% else %}
-        {{ val }}
+    {% if config is defined %}
+        {% if config|is_type('string') %}
+            {% set value = attribute(parent, config) %}
+        {% elseif config|is_type('array') %}
+            {# TODO: parse display config #}
+        {% endif %}
     {% endif %}
 
-{% elseif config|is_type('array') %}
+    {% if value is defined %}
+        {% if value|is_type('bool') %}
+            {{ value|label }}
+        {% elseif value|is_type('datetime') %}
+            {{ value|date }}
+        {% else %}
+            {{ value }}
+        {% endif %}
+    {% endif %}
 
-    {# TODO: parse display config #}
-
-{% endif %}
 {% endspaceless %}

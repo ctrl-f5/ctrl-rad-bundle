@@ -3,6 +3,8 @@
 namespace Ctrl\RadBundle\Crud;
 
 use Ctrl\RadBundle\Crud\Action\AbstractAction;
+use Ctrl\RadBundle\Crud\Action\EditAction;
+use Ctrl\RadBundle\Crud\Action\IndexAction;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -24,15 +26,18 @@ trait Crud
     }
 
     /**
+     * @param string $actionClass
      * @return ConfigBuilder
      * @throws \Exception
      */
-    public function getCrudConfigBuilder()
+    public function getCrudConfigBuilder($actionClass)
     {
         $this->checkContainerAware();
 
         $builder = $this->container->get('ctrl_rad.crud.config_builder');
+        $builder->setActionClass($actionClass);
         $this->configureCrudBuilder($builder);
+
         return $builder;
     }
 
@@ -46,59 +51,15 @@ trait Crud
     }
 
     /**
-     * @param Config|ConfigBuilder $config
+     * @param ConfigBuilder $builder
      * @return AbstractAction
      */
-    public function buildCrudIndex($config)
-    {
-        return $this->buildCrud(AbstractAction::ACTION_INDEX, $config);
-    }
-
-    /**
-     * @param Config|ConfigBuilder $config
-     * @return AbstractAction
-     */
-    public function buildCrudCreate($config)
-    {
-        return $this->buildCrud(AbstractAction::ACTION_CREATE, $config);
-    }
-
-    /**
-     * @param Config|ConfigBuilder $config
-     * @return AbstractAction
-     */
-    public function buildCrudEdit($config)
-    {
-        return $this->buildCrud(AbstractAction::ACTION_EDIT, $config);
-    }
-
-    /**
-     * @param string $type
-     * @param Config|ConfigBuilder $config
-     * @return AbstractAction
-     */
-    public function buildCrud($type, $config)
+    public function buildCrud($builder)
     {
         $this->checkContainerAware();
 
-        return $this->container
-            ->get('ctrl_rad.crud.action_factory')
-            ->create($type, $config);
-    }
-
-    protected function configureButton(array $options)
-    {
-        return array_merge(
-            array(
-                'type'      => 'a',
-                'label'     => 'action',
-                'icon'      => null,
-                'class'     => 'default',
-                'route'     => function ($entity) use ($options) {
-                    return $this->generateUrl($options['route_name'], array('id' => $entity->getId()));
-                }
-            ),
-            $options
+        return $this->container->get('ctrl_rad.crud.action_factory')->create(
+            $builder->buildConfig()
         );
     }
 }

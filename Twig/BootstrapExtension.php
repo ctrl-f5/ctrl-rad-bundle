@@ -3,6 +3,7 @@
 namespace Ctrl\RadBundle\Twig;
 
 use Ctrl\Common\Tools\Doctrine\Paginator;
+use Ctrl\RadBundle\TableView\Table;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -52,8 +53,11 @@ class BootstrapExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('page_title', array($this, 'pageTitle'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('pagination', array($this, 'pagination'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('page_title',  array($this, 'pageTitle'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('pagination',  array($this, 'pagination'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('button',      array($this, 'button'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('buttonGroup',      array($this, 'buttonGroup'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('table',       array($this, 'table'), array('is_safe' => array('html'), 'needs_environment' => true)),
         );
     }
 
@@ -113,5 +117,60 @@ class BootstrapExtension extends \Twig_Extension
                 </div>
             </div>
 HTML;
+    }
+
+    /**
+     * @param array $config
+     * @return string
+     */
+    public function button($config)
+    {
+        $path = $this->router->generate($config['route'], $config['route_params']);
+        $class = $config['class'];
+        $icon = $config['icon'] ? "<i class=\"fa fa-{$config['icon']} fa-fw\"></i> ": '';
+        $label = $icon . $this->translator->trans($config['label']);
+        $attributes = implode(' ', array_map(
+            function ($key, $val) {
+                return sprintf('%s="%s"', $key, $val);
+            },
+            array_keys($config['attributes']),
+            $config['attributes']
+        ));
+
+        return <<<HTML
+            <a href="$path" class="btn btn-sm btn-$class" $attributes>$label</a>
+HTML;
+    }
+
+    /**
+     * @param array $configs
+     * @return string
+     */
+    public function buttonGroup($configs)
+    {
+        if (!count($configs)) {
+            return '';
+        }
+
+        $buttons = '';
+        foreach ($configs as $config) {
+            $buttons .= $this->button($config);
+        }
+
+        return <<<HTML
+            <div class="btn-group">$buttons</div>
+HTML;
+    }
+
+    /**
+     * @param \Twig_Environment $env
+     * @param Table $table
+     * @return string
+     */
+    public function table(\Twig_Environment $env, Table $table)
+    {
+        return $env->render($table->getTemplate(), array(
+            'table' => $table
+        ));
     }
 }
