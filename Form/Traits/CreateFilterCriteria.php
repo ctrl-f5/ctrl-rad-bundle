@@ -21,7 +21,7 @@ trait CreateFilterCriteria
             switch ($child->getConfig()->getType()->getName()) {
                 case 'text':
                     if ($child->getData()) {
-                        $criteria[$fieldPath . ' LIKE :' . $field] = '%' . $child->getData() . '%';
+                        $criteria[$fieldPath . ' LIKE'] = '%' . $child->getData() . '%';
                     }
                     break;
                 case 'checkbox':
