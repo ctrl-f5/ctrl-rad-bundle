@@ -1,0 +1,11 @@
+{% block text_addon_widget -%}
+    <div class="input-group">
+        {% if not addon_prefix is same as(false) %}
+        <span class="input-group-addon">{{ addon_prefix }}</span>
+        {% endif %}
+        {{- block('form_widget_simple') -}}
+        {% if not addon_suffix is same as(false) %}
+            <span class="input-group-addon">{{ addon_suffix }}</span>
+        {% endif %}
+    </div>
+{%- endblock text_addon_widget %}

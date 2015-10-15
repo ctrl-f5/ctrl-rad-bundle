@@ -22,6 +22,14 @@ services:
             - [ setContainer, [ @service_container ]]
 
     #
+    # Custom Form types
+    #
+    ctrl_rad.form.type.text_addon:
+        class: Ctrl\RadBundle\Form\Type\TextAddonType
+        tags:
+            - { name: form.type, alias: text_addon }
+
+    #
     # Twig extensions
     #
 
