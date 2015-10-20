@@ -124,7 +124,9 @@ class Table
     {
         if (!is_array($config)) {
             $config = array(
-                'label' => $config
+                'label'     => $config,
+                'type'      => 'text',
+                'options'   => array(),
             );
         }
 
@@ -175,7 +177,16 @@ class Table
             $values = [];
             foreach ($this->columns as $col) {
                 try {
-                    $values[$col['property']] = $accessor->getValue($data, $col['property']);
+
+                    $val = $accessor->getValue($data, $col['property']);
+                    switch ($col['type']) {
+                        case 'datetime':
+                            if (isset($col['options']['format'])) {
+                                $val = date_format($val, $col['options']['format']);
+                            }
+                    }
+                    $values[$col['property']] = $val;
+
                 } catch (UnexpectedTypeException $e) {
                     $values[$col['property']] = null;
                 }
