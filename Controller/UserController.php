@@ -4,6 +4,7 @@ namespace Ctrl\RadBundle\Controller;
 
 use Ctrl\RadBundle\Crud\Action\EditAction;
 use Ctrl\RadBundle\Crud\Action\IndexAction;
+use Ctrl\RadBundle\EntityService\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +26,7 @@ class UserController extends Controller implements ServiceProviderInterface
     use Crud;
 
     /**
-     * @return ServiceInterface
+     * @return ServiceInterface|UserService
      */
     public function getEntityService()
     {

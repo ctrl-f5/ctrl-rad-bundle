@@ -21,10 +21,11 @@ class UserService extends AbstractDoctrineService
     }
 
     /**
+     * @param $keyAndLabel
      * @return array
      */
-    public function getKnownRoles()
+    public function getKnownRoles($keyAndLabel = false)
     {
-        return $this->getEntityRepository()->getKnownRoles();
+        return $this->getEntityRepository()->getKnownRoles($keyAndLabel);
     }
 }

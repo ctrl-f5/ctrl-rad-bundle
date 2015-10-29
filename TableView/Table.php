@@ -39,6 +39,11 @@ class Table
     protected $rowProcessor;
 
     /**
+     * @var bool
+     */
+    protected $alwaysRenderActionColumn = false;
+
+    /**
      * @param array|mixed $data
      * @return $this
      */
@@ -101,6 +106,24 @@ class Table
     }
 
     /**
+     * @return boolean
+     */
+    public function getAlwaysRenderActionColumn()
+    {
+        return $this->alwaysRenderActionColumn;
+    }
+
+    /**
+     * @param boolean $alwaysRenderActionColumn
+     * @return $this
+     */
+    public function setAlwaysRenderActionColumn($alwaysRenderActionColumn = true)
+    {
+        $this->alwaysRenderActionColumn = $alwaysRenderActionColumn;
+        return $this;
+    }
+
+    /**
      * @param array $config
      * @return $this
      */
@@ -148,7 +171,7 @@ class Table
             $headers[] = $col['label'];
         }
 
-        if (count($this->actions)) {
+        if ($this->alwaysRenderActionColumn || count($this->actions)) {
             $headers[] = 'crud.index.column.actions';
         }
 
