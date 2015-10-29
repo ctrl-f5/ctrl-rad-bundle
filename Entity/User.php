@@ -4,13 +4,14 @@ namespace Ctrl\RadBundle\Entity;
 
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="\Ctrl\RadBundle\Repository\UserRepository")
  * @ORM\Table(name="fos_user")
  */
-class User extends BaseUser
+class User extends BaseUser implements EncoderAwareInterface
 {
     /**
      * @ORM\Id
@@ -25,6 +26,11 @@ class User extends BaseUser
      * @Assert\Email()
      */
     protected $email;
+
+    /**
+     * @var string
+     */
+    protected $passwordEncoderName;
 
     /**
      * @param string $roles
@@ -49,5 +55,36 @@ class User extends BaseUser
         array_unique($roleNames);
 
         return $this->setRoles($roleNames);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswordEncoderName()
+    {
+        return $this->passwordEncoderName;
+    }
+
+    /**
+     * @param string $passwordEncoderName
+     * @return $this
+     */
+    public function setPasswordEncoderName($passwordEncoderName)
+    {
+        $this->passwordEncoderName = $passwordEncoderName;
+        return $this;
+    }
+
+    /**
+     * Gets the name of the encoder used to encode the password.
+     *
+     * If the method returns null, the standard way to retrieve the encoder
+     * will be used instead.
+     *
+     * @return string
+     */
+    public function getEncoderName()
+    {
+        return $this->passwordEncoderName;
     }
 }
