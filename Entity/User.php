@@ -33,31 +33,6 @@ class User extends BaseUser implements EncoderAwareInterface
     protected $passwordEncoderName;
 
     /**
-     * @param string $roles
-     * @return $this
-     */
-    public function setLdapRoles($roles)
-    {
-        if (!is_array($roles)) {
-            $roles = array($roles);
-        }
-
-        $roleNames = array();
-
-        foreach ($roles as $roleString) {
-            $parts = explode(',', $roleString);
-            foreach ($parts as $part) {
-                $subparts = explode('=', $part);
-                $roleNames[] = 'ROLE_LDAP_' . strtoupper(str_replace(' ', '_', trim(end($subparts))));
-            }
-        }
-
-        array_unique($roleNames);
-
-        return $this->setRoles($roleNames);
-    }
-
-    /**
      * @return string
      */
     public function getPasswordEncoderName()
