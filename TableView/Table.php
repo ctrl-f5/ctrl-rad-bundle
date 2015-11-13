@@ -181,7 +181,7 @@ class Table
                     $val = $accessor->getValue($data, $col['property']);
                     switch ($col['type']) {
                         case 'datetime':
-                            if (isset($col['options']['format'])) {
+                            if ($val instanceof \DateTime && isset($col['options']['format'])) {
                                 $val = date_format($val, $col['options']['format']);
                             }
                     }
