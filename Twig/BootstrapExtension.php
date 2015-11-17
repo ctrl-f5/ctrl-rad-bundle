@@ -2,7 +2,7 @@
 
 namespace Ctrl\RadBundle\Twig;
 
-use Ctrl\Common\Tools\Doctrine\Paginator;
+use Ctrl\Common\Paginator\PaginatedDataInterface;
 use Ctrl\RadBundle\TableView\Table;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,7 +78,7 @@ class BootstrapExtension extends \Twig_Extension
         return '<span class="label label-' . $class .'">' . $content . '</span>';
     }
 
-    public function pagination(Paginator $paginator)
+    public function pagination(PaginatedDataInterface $paginator)
     {
         $query = $this->request->query;
 

@@ -2,7 +2,7 @@
 
 namespace Ctrl\RadBundle\Crud\Action;
 
-use Ctrl\Common\Tools\Doctrine\Paginator;
+use Ctrl\Common\Paginator\DoctrinePaginator;
 use Ctrl\RadBundle\Form\Traits\CreateFilterCriteria;
 use Ctrl\RadBundle\TableView\Table;
 use Symfony\Component\Form\FormInterface;
@@ -44,7 +44,7 @@ class IndexAction extends AbstractAction
         if (is_callable($config['query_builder'])) {
             $config['query_builder']($queryBuilder);
         }
-        $paginator = new Paginator($queryBuilder);
+        $paginator = new DoctrinePaginator($queryBuilder);
         $paginator->configureFromRequestParams($request->query->all());
 
         $this->getTable()->setData($paginator);

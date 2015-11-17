@@ -2,7 +2,7 @@
 
 namespace Ctrl\RadBundle\TableView;
 
-use Ctrl\Common\Tools\Doctrine\Paginator;
+use Ctrl\Common\Paginator\PaginatedDataInterface;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -37,6 +37,16 @@ class Table
      * @var callable|null
      */
     protected $rowProcessor;
+
+    /**
+     * @var bool
+     */
+    protected $alwaysRenderActionColumn = false;
+
+    /**
+     * @var array
+     */
+    protected $viewVariables = array();
 
     /**
      * @param array|mixed $data
@@ -97,7 +107,25 @@ class Table
      */
     public function showPagination()
     {
-        return $this->enablePaginator && $this->data instanceof Paginator;
+        return $this->enablePaginator && $this->data instanceof PaginatedDataInterface;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAlwaysRenderActionColumn()
+    {
+        return $this->alwaysRenderActionColumn;
+    }
+
+    /**
+     * @param boolean $alwaysRenderActionColumn
+     * @return $this
+     */
+    public function setAlwaysRenderActionColumn($alwaysRenderActionColumn = true)
+    {
+        $this->alwaysRenderActionColumn = $alwaysRenderActionColumn;
+        return $this;
     }
 
     /**
@@ -124,7 +152,9 @@ class Table
     {
         if (!is_array($config)) {
             $config = array(
-                'label' => $config
+                'label'     => $config,
+                'type'      => 'text',
+                'options'   => array(),
             );
         }
 
@@ -146,7 +176,7 @@ class Table
             $headers[] = $col['label'];
         }
 
-        if (count($this->actions)) {
+        if ($this->alwaysRenderActionColumn || count($this->actions)) {
             $headers[] = 'crud.index.column.actions';
         }
 
@@ -175,7 +205,16 @@ class Table
             $values = [];
             foreach ($this->columns as $col) {
                 try {
-                    $values[$col['property']] = $accessor->getValue($data, $col['property']);
+
+                    $val = $accessor->getValue($data, $col['property']);
+                    switch ($col['type']) {
+                        case 'datetime':
+                            if ($val instanceof \DateTime && isset($col['options']['format'])) {
+                                $val = date_format($val, $col['options']['format']);
+                            }
+                    }
+                    $values[$col['property']] = $val;
+
                 } catch (UnexpectedTypeException $e) {
                     $values[$col['property']] = null;
                 }
@@ -256,6 +295,35 @@ class Table
     public function setRowProcessor($rowProcessor)
     {
         $this->rowProcessor = $rowProcessor;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getViewVariables()
+    {
+        return $this->viewVariables;
+    }
+
+    /**
+     * @param array $viewVariables
+     * @return $this
+     */
+    public function setViewVariables($viewVariables)
+    {
+        $this->viewVariables = $viewVariables;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function setViewVariable($name, $value)
+    {
+        $this->viewVariables[$name] = $value;
         return $this;
     }
 }
