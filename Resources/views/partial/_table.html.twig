@@ -27,7 +27,7 @@
     {% if table.showPagination and table.data.pageCount > 1 %}
     <tfoot>
         <tr>
-            <td colspan="8" class="text-center">
+            <td colspan="{{ table.columnHeaders|length }}" class="text-center">
                 {{ pagination(table.data, app.request) }}
             </td>
         </tr>

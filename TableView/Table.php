@@ -2,7 +2,7 @@
 
 namespace Ctrl\RadBundle\TableView;
 
-use Ctrl\Common\Tools\Doctrine\Paginator;
+use Ctrl\Common\Paginator\PaginatedDataInterface;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -42,6 +42,11 @@ class Table
      * @var bool
      */
     protected $alwaysRenderActionColumn = false;
+
+    /**
+     * @var array
+     */
+    protected $viewVariables = array();
 
     /**
      * @param array|mixed $data
@@ -102,7 +107,7 @@ class Table
      */
     public function showPagination()
     {
-        return $this->enablePaginator && $this->data instanceof Paginator;
+        return $this->enablePaginator && $this->data instanceof PaginatedDataInterface;
     }
 
     /**
@@ -290,6 +295,35 @@ class Table
     public function setRowProcessor($rowProcessor)
     {
         $this->rowProcessor = $rowProcessor;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getViewVariables()
+    {
+        return $this->viewVariables;
+    }
+
+    /**
+     * @param array $viewVariables
+     * @return $this
+     */
+    public function setViewVariables($viewVariables)
+    {
+        $this->viewVariables = $viewVariables;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function setViewVariable($name, $value)
+    {
+        $this->viewVariables[$name] = $value;
         return $this;
     }
 }
