@@ -3,7 +3,7 @@
 namespace Ctrl\RadBundle\Twig;
 
 use Ctrl\Common\Paginator\PaginatedDataInterface;
-use Ctrl\RadBundle\TableView\Table;
+use Ctrl\RadBundle\TableView\TableView;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -164,10 +164,10 @@ HTML;
 
     /**
      * @param \Twig_Environment $env
-     * @param Table $table
+     * @param TableView $table
      * @return string
      */
-    public function table(\Twig_Environment $env, Table $table)
+    public function table(\Twig_Environment $env, TableView $table)
     {
         return $env->render($table->getTemplate(), array(
             'table' => $table
