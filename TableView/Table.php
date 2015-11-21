@@ -326,4 +326,22 @@ class Table
         $this->viewVariables[$name] = $value;
         return $this;
     }
+
+    /**
+     * @return TableView
+     */
+    public function createView()
+    {
+        $view = new TableView();
+        $view
+            ->setTemplate($this->getTemplate())
+            ->setColumnHeaders($this->getColumnHeaders())
+            ->setRows($this->getRows())
+            ->setShowPagination($this->showPagination())
+            ->setData($this->getData())
+            ->setVariables($this->getViewVariables())
+        ;
+
+        return $view;
+    }
 }
