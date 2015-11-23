@@ -3,7 +3,7 @@
 namespace Ctrl\RadBundle\Crud;
 
 use Ctrl\Common\EntityService\ServiceInterface;
-use Ctrl\RadBundle\TableView\Table;
+use Ctrl\RadBundle\TableView\TableBuilder;
 use Symfony\Component\Form\FormInterface;
 
 class ConfigBuilder
@@ -145,10 +145,10 @@ class ConfigBuilder
     }
 
     /**
-     * @param Table $table
+     * @param TableBuilder $table
      * @return $this
      */
-    public function setTable(Table $table)
+    public function setTable(TableBuilder $table)
     {
         $this->action['table'] = $table;
 
@@ -279,6 +279,6 @@ class ConfigBuilder
 
     public function createTable()
     {
-        return new Table();
+        return new TableBuilder();
     }
 }

@@ -55,9 +55,9 @@ Configuration:
 ```
 <?php
 
-use Ctrl\RadBundle\TableView\Table;
+use Ctrl\RadBundle\TableView\TableBuilder;
 
-$table = new Table();
+$table = new TableBuilder();
 
 // set columns "propertyName" => "column header"
 $table->setColumns(array(

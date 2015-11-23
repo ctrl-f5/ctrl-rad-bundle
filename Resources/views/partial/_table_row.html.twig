@@ -1,0 +1,5 @@
+<tr{% for key, val in row.attributes %} {{ key }}="{{ val|raw }}"{% endfor %}>
+    {% for cell in row.cells %}
+        {% include cell.template with { cell: cell, table: table } only %}
+    {% endfor %}
+</tr>

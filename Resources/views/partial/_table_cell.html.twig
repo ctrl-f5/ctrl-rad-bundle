@@ -1,0 +1,9 @@
+{% spaceless %}
+    {% if cell is defined and cell|is_type('array') %}
+        {% if (cell.type == 'template') %}
+            {% include cell.options.template with { cell: cell } only %}
+        {% else %}
+            <td>{% include "CtrlRadBundle:partial:_value_render.html.twig" with { value: cell.value } only %}</td>
+        {% endif %}
+    {% endif %}
+{% endspaceless %}

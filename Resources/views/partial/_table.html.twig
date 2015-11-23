@@ -1,4 +1,4 @@
-<table class="table table-striped table-bordered table-hover">
+<table class="{% for class in table.classes %}{{ class }} {% endfor %}">
     <thead>
     <tr>
         {% for label in table.columnHeaders %}
@@ -8,29 +8,10 @@
     </thead>
     <tbody>
     {% for row in table.rows %}
-    <tr>
-        {% for value in row.values %}
-        <td>
-            {% include "CtrlRadBundle:partial:_value_render.html.twig" with { value: value } only %}
-        </td>
-        {% endfor %}
-        {% if row.actions|length %}
-        <td>{{ buttonGroup(row.actions) }}</td>
-        {% endif %}
-    </tr>
+        {% include table.rowTemplate with { row: row, table: table } only %}
     {% else %}
-        <tr>
-            <td colspan="{{ table.columnHeaders|length }}">No entries found</td>
-        </tr>
+        {% include table.rowEmptyTemplate with { table: table } only %}
     {% endfor %}
     </tbody>
-    {% if table.showPagination and table.data.pageCount > 1 %}
-    <tfoot>
-        <tr>
-            <td colspan="{{ table.columnHeaders|length }}" class="text-center">
-                {{ pagination(table.data, app.request) }}
-            </td>
-        </tr>
-    </tfoot>
-    {% endif %}
+    {% include table.footerTemplate with { table: table } only %}
 </table>

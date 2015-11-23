@@ -4,7 +4,7 @@ namespace Ctrl\RadBundle\Crud;
 
 use Ctrl\RadBundle\Crud\Action\EditAction;
 use Ctrl\RadBundle\Crud\Action\IndexAction;
-use Ctrl\RadBundle\TableView\Table;
+use Ctrl\RadBundle\TableView\TableBuilder;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

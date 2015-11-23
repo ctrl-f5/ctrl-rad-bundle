@@ -2,6 +2,7 @@ security.login.form_title: 'Please Log in'
 registration.form_title: 'Register a new Account'
 registration.cancel: Cancel
 crud.index.title: '%s'
+table.column.actions: Actions
 crud.index.column.actions: Actions
 form.button.save: Save
 form.button.back: Back

@@ -4,7 +4,7 @@ namespace Ctrl\RadBundle\Crud\Action;
 
 use Ctrl\Common\Paginator\DoctrinePaginator;
 use Ctrl\RadBundle\Form\Traits\CreateFilterCriteria;
-use Ctrl\RadBundle\TableView\Table;
+use Ctrl\RadBundle\TableView\TableBuilder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -76,7 +76,7 @@ class IndexAction extends AbstractAction
     }
 
     /**
-     * @return Table
+     * @return TableBuilder
      */
     public function getTable()
     {

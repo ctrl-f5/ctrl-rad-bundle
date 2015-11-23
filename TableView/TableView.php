@@ -6,20 +6,32 @@ use Ctrl\Common\Paginator\PaginatedDataInterface;
 
 class TableView
 {
-    /**
-     * @var string
-     */
-    protected $template = 'CtrlRadBundle:partial:_table.html.twig';
+    const TMPL_TABLE                = 'CtrlRadBundle:partial:_table.html.twig';
+    const TMPL_TABLE_ROW            = 'CtrlRadBundle:partial:_table_row.html.twig';
+    const TMPL_TABLE_ROW_EMPTY      = 'CtrlRadBundle:partial:_table_row_empty.html.twig';
+    const TMPL_TABLE_FOOTER         = 'CtrlRadBundle:partial:_table_footer.html.twig';
+    const TMPL_TABLE_CELL           = 'CtrlRadBundle:partial:_table_cell.html.twig';
+    const TMPL_TABLE_CELL_ACTIONS   = 'CtrlRadBundle:partial:_table_cell_actions.html.twig';
 
-    /**
-     * @var array
-     */
-    protected $columnHeaders = array();
+    protected $template = self::TMPL_TABLE;
+
+    protected $footerTemplate = self::TMPL_TABLE_FOOTER;
+
+    protected $rowTemplate = self::TMPL_TABLE_ROW;
+
+    protected $rowEmptyTemplate = self::TMPL_TABLE_ROW_EMPTY;
+
+    protected $classes = array();
 
     /**
      * @var array
      */
     protected $rows = array();
+
+    /**
+     * @var array
+     */
+    protected $columnHeaders = array();
 
     /**
      * @var array|PaginatedDataInterface
@@ -57,18 +69,62 @@ class TableView
     /**
      * @return array
      */
-    public function getColumnHeaders()
+    public function getClasses()
     {
-        return $this->columnHeaders;
+        return $this->classes;
     }
 
     /**
-     * @param array $columnHeaders
+     * @return string
+     */
+    public function getFooterTemplate()
+    {
+        return $this->footerTemplate;
+    }
+
+    /**
+     * @param string $footerTemplate
      * @return $this
      */
-    public function setColumnHeaders($columnHeaders)
+    public function setFooterTemplate($footerTemplate)
     {
-        $this->columnHeaders = $columnHeaders;
+        $this->footerTemplate = $footerTemplate;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRowTemplate()
+    {
+        return $this->rowTemplate;
+    }
+
+    /**
+     * @param string $rowTemplate
+     * @return $this
+     */
+    public function setRowTemplate($rowTemplate)
+    {
+        $this->rowTemplate = $rowTemplate;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRowEmptyTemplate()
+    {
+        return $this->rowEmptyTemplate;
+    }
+
+    /**
+     * @param string $rowEmptyTemplate
+     * @return $this
+     */
+    public function setRowEmptyTemplate($rowEmptyTemplate)
+    {
+        $this->rowEmptyTemplate = $rowEmptyTemplate;
         return $this;
     }
 
@@ -87,6 +143,34 @@ class TableView
     public function setRows($rows)
     {
         $this->rows = $rows;
+        return $this;
+    }
+
+    /**
+     * @param array $classes
+     * @return $this
+     */
+    public function setClasses($classes)
+    {
+        $this->classes = $classes;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getColumnHeaders()
+    {
+        return $this->columnHeaders;
+    }
+
+    /**
+     * @param array $columnHeaders
+     * @return $this
+     */
+    public function setColumnHeaders($columnHeaders)
+    {
+        $this->columnHeaders = $columnHeaders;
         return $this;
     }
 
