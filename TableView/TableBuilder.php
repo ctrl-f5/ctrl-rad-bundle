@@ -339,9 +339,9 @@ class TableBuilder
 
     /**
      * @param array $config
-     * @return $this
+     * @return array
      */
-    public function createAction($config)
+    public function createAction(array $config = array())
     {
         return array_merge(
             array(
@@ -359,9 +359,9 @@ class TableBuilder
 
     /**
      * @param array $config
-     * @return $this
+     * @return array
      */
-    public function createEditAction($config)
+    public function createEditAction(array $config = array())
     {
         $config = array_merge(
             [
@@ -380,9 +380,9 @@ class TableBuilder
 
     /**
      * @param array $config
-     * @return $this
+     * @return array
      */
-    public function createDetailAction($config)
+    public function createDetailAction(array $config = array())
     {
         $config = array_merge(
             array(
@@ -401,9 +401,9 @@ class TableBuilder
 
     /**
      * @param array $config
-     * @return $this
+     * @return array
      */
-    public function createDeleteAction($config)
+    public function createDeleteAction(array $config = array())
     {
         $config = array_merge(
             [
