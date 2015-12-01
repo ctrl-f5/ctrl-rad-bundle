@@ -50,7 +50,7 @@ class IndexAction extends AbstractAction
         $this->getTable()->setData($paginator);
 
         return $this->templating->renderResponse($config['template'], array(
-            'table'         => $config['table'],
+            'table'         => $config['table']->createView(),
             'filterActive'  => $filterActive,
             'form'          => $formView,
             'config'        => $this->config,
