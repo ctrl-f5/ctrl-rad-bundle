@@ -27,8 +27,15 @@ $(function() {
     });
 
     var url = window.location;
+    var maxSlashes = 0;
     var element = $('.sidebar-nav ul.nav a').filter(function() {
-        return this.href == url || url.href.indexOf(this.href) == 0;
+        if (this.href == url || url.href.indexOf(this.href) == 0) {
+            var slashCount = (this.href.match(new RegExp("/", "g")) || []).length;
+            if (slashCount > maxSlashes) maxSlashes = slashCount;
+            return true;
+        }
+    }).filter(function () {
+        return (this.href.match(new RegExp("/", "g")) || []).length == maxSlashes;
     }).addClass('active').parent().parent().addClass('in').parent();
     if (element.is('li')) {
         element.addClass('active');
