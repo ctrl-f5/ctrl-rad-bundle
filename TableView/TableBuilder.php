@@ -3,6 +3,7 @@
 namespace Ctrl\RadBundle\TableView;
 
 use Ctrl\Common\Paginator\PaginatedDataInterface;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -63,6 +64,11 @@ class TableBuilder
      */
     protected $viewVariables = array();
 
+    /**
+     * @var Translator
+     */
+    protected $translator;
+
     public function __construct()
     {
         $this->columns = new ColumnBuilder($this);
@@ -74,6 +80,24 @@ class TableBuilder
             'table-hover',
             'table-test',
         );
+    }
+
+    /**
+     * @return Translator
+     */
+    public function getTranslator()
+    {
+        return $this->translator;
+    }
+
+    /**
+     * @param Translator $translator
+     * @return $this
+     */
+    public function setTranslator($translator)
+    {
+        $this->translator = $translator;
+        return $this;
     }
 
     /**
@@ -304,7 +328,16 @@ class TableBuilder
                         case 'text':
                         case 'datetime':
                             $val = $accessor->getValue($data, $col['options']['property']);
-                            if ($col['type'] === 'datetime') {
+
+                            if ($col['type'] === 'text') {
+                                if ($this->translator && $col['options']['translate'] !== false) {
+                                    $val = $this->translator->trans(
+                                        $val,
+                                        $col['options']['translation_params'],
+                                        $col['options']['translation_domain']
+                                    );
+                                }
+                            } else if ($col['type'] === 'datetime') {
                                 if ($val instanceof \DateTime && isset($col['options']['format'])) {
                                     $val = date_format($val, $col['options']['format']);
                                 }

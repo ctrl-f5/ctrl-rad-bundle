@@ -37,9 +37,9 @@ class ColumnBuilder
         $config = $this->assertConfig(
             $config,
             [
-                'type'      => '',
-                'label'     => '',
-                'template'  => TableView::TMPL_TABLE_CELL
+                'type'                  => '',
+                'label'                 => '',
+                'template'              => TableView::TMPL_TABLE_CELL,
             ]
         );
 
@@ -72,7 +72,12 @@ class ColumnBuilder
         $config = $this->assertConfig(
             $config,
             ['type' => 'text'],
-            ['property' => $property]
+            [
+                'property'              => $property,
+                'translate'             => false,
+                'translation_domain'    => null,
+                'translation_params'    => [],
+            ]
         );
 
         return $this->addColumn($config);
