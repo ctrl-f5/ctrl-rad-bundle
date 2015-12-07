@@ -348,7 +348,7 @@ class TableBuilder
                     $cells[] = array_merge($col, ['value' => $val]);
 
                 } catch (UnexpectedTypeException $e) {
-                    $cells[$col['property']] = null;
+                    $cells[] = array_merge($col, ['value' => null]);
                 }
             }
 
