@@ -49,7 +49,7 @@ class IndexAction extends AbstractAction
 
         $this->getTable()->setData($paginator);
 
-        return $this->templating->renderResponse($config['template'], array(
+        $viewVars = array_merge(array(
             'table'         => $config['table']->createView(),
             'filterActive'  => $filterActive,
             'form'          => $formView,
@@ -57,7 +57,9 @@ class IndexAction extends AbstractAction
             'options'       => $options,
             'routes'        => $routes,
             'action'        => $config,
-        ));
+        ), $options['view_vars']);
+
+        return $this->templating->renderResponse($config['template'], $viewVars);
     }
 
     public function configureOptions(OptionsResolver $resolver)

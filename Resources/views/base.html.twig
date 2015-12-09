@@ -10,7 +10,14 @@
     <meta name="author" content="">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 
-    <title>{% block title %}{% if app_title is defined %}{{ app_title }}{% else %}CTRL RAD{% endif %}{% endblock %}</title>
+    <title>
+        {%- block title -%}
+            {% if app_title is defined %}{{ app_title }}{% else %}CTRL RAD{% endif %}
+            {% if app_title_append is defined %}
+                | {{ app_title_append }}
+            {% endif %}
+        {%- endblock -%}
+    </title>
 
     {% stylesheets filter='cssrewrite'
         'bundles/ctrlrad/vendor/bootstrap/dist/css/bootstrap.min.css'
