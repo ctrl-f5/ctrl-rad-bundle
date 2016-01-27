@@ -65,6 +65,11 @@ class IndexAction extends AbstractAction
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
+
+        $resolver->setRequired([
+            'template'
+        ]);
+
         $resolver->setDefaults(array(
             'template'              => 'CtrlRadBundle:crud:index.html.twig',
             'template_filter_form'  => 'CtrlRadBundle:partial:_form_elements.html.twig',

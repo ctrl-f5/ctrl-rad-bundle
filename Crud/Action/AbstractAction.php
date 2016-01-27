@@ -65,8 +65,5 @@ abstract class AbstractAction
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired([
-            'template'
-        ]);
     }
 }

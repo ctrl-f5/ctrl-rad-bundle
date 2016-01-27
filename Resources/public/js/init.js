@@ -1,5 +1,7 @@
 $(function () {
 
+    var $body = $('body');
+
     /**
      * Select2
      */
@@ -13,6 +15,40 @@ $(function () {
         $(this).select2(options);
     });
 
+    $body.on('click', '[data-ctrl-confirm]', function (e) {
+        var $el = $(this);
+        var message = $(this).data('ctrl-confirm');
+        if (!message) message = 'Please confirm this action';
+
+        var $modal;
+        if ($(this).attr('data-ctrl-confirm-modal')) {
+            $modal = $($(this).data('ctrl-confirm-modal'));
+        } else {
+            $modal = $(
+                '<div class="modal fade" tabindex="-1">\
+                    <div class="modal-dialog modal-sm">\
+                        <div class="modal-content">\
+                            <div class="modal-body">' + message + '</div>\
+                            <div class="modal-footer">\
+                                <button type="button" class="btn btn-success confirm-action" data-dismiss="modal"">Confirm</button>\
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>'
+            );
+        }
+
+        $modal.on('click', 'button.confirm-action', function () {
+            window.location = $el.attr('href');
+        });
+
+        $modal.modal();
+
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+    });
 });
 
 /**
