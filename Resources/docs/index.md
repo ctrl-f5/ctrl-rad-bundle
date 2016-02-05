@@ -60,22 +60,22 @@ use Ctrl\RadBundle\TableView\TableBuilder;
 $table = new TableBuilder();
 
 // set columns "propertyName" => "column header"
-$table->setColumns(array(
+$table->columns([
   'id'        => '#',
   'username'  => 'Username',
   'email'     => 'Email',
   'enabled'   => 'Enabled',
   'locked'    => 'Locked',
-));
+]);
 
 // add actions for each row
-$table->addAction(array(
+$table->addAction([
   'label'         => 'Edit',
   'icon'          => 'edit',
   'class'         => 'primary',
   'route'         => 'user_edit',
   'route_params'  => function ($data) { return ['id' => $data->getId()]; },
-));
+]);
 
 $table->setData(...); // insert a paginator or array
 ```

@@ -116,17 +116,19 @@ class ColumnBuilder
             return $this->addActions($actions);
         }
 
-        $config = $this->assertConfig(
+        $this->actionColumn = $this->assertConfig(
             $config,
             [
                 'type'      => 'action',
                 'label'     => 'table.column.actions',
                 'template'  => TableView::TMPL_TABLE_CELL_ACTIONS,
             ],
-            ['actions'   => $actions]
+            ['actions' => []]
         );
 
-        return $this->actionColumn = $config;
+        $this->addActions($actions);
+
+        return $this;
     }
 
     public function addActions(array $actions)
@@ -141,10 +143,10 @@ class ColumnBuilder
     public function addAction(array $action)
     {
         if (!$this->actionColumn) {
-            $this->addActionColumn([$action]);
+            $this->addActionColumn();
         }
 
-        $this->actionColumn['options']['actions'][] = $action;
+        $this->actionColumn['options']['actions'][] = $this->table()->createAction($action);
 
         return $this;
     }

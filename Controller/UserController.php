@@ -6,6 +6,7 @@ use Ctrl\RadBundle\Crud\Action\DeleteAction;
 use Ctrl\RadBundle\Crud\Action\EditAction;
 use Ctrl\RadBundle\Crud\Action\IndexAction;
 use Ctrl\RadBundle\EntityService\UserService;
+use Ctrl\RadBundle\TableView\TableBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,6 +55,22 @@ class UserController extends Controller implements ServiceProviderInterface
     public function indexAction(Request $request)
     {
         $builder = $this->getCrudConfigBuilder(IndexAction::class);
+
+        $table = new TableBuilder();
+        $table
+            ->columns([
+                'id'        => '#',
+                'username'  => 'Username',
+                'email'     => 'Email',
+                'enabled'   => 'Enabled',
+                'locked'    => 'Locked',
+            ])
+            ->addActionColumn([
+                $table->createEditAction([
+                    'route' => 'ctrl_rad_user_edit',
+                ])
+            ]);
+
         $builder
             ->setFilterForm($this->createFormBuilder(null, array('csrf_protection' => false))
                 ->add('username')
@@ -62,22 +79,7 @@ class UserController extends Controller implements ServiceProviderInterface
                 ->add('locked', 'checkbox')
                 ->getForm()
             )
-                ->setTable(
-                    $builder->createTable()
-                        ->setColumns(array(
-                            'id'        => '#',
-                            'username'  => 'Username',
-                            'email'     => 'Email',
-                            'enabled'   => 'Enabled',
-                            'locked'    => 'Locked',
-                        ))->addAction(array(
-                            'label'         => 'Edit',
-                            'icon'          => 'edit',
-                            'class'         => 'primary',
-                            'route'         => 'ctrl_rad_user_edit',
-                            'route_params'  => function ($data) { return ['id' => $data->getId()]; },
-                        ))
-                );
+            ->setTable($table);
 
         return $this->buildCrud($builder)->execute($request);
     }
