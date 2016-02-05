@@ -2,6 +2,7 @@
 
 namespace Ctrl\RadBundle\Entity;
 
+use Ctrl\Common\Entity\EntityInterface;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Encoder\EncoderAwareInterface;
@@ -11,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="\Ctrl\RadBundle\Repository\UserRepository")
  * @ORM\Table(name="fos_user")
  */
-class User extends BaseUser implements EncoderAwareInterface
+class User extends BaseUser implements EncoderAwareInterface, EntityInterface
 {
     /**
      * @ORM\Id
