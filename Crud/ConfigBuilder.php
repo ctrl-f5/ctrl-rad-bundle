@@ -145,6 +145,18 @@ class ConfigBuilder
     }
 
     /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function setViewVariable($name, $value)
+    {
+        $this->config['view_vars'][$name] = $value;
+
+        return $this;
+    }
+
+    /**
      * @param TableBuilder $table
      * @return $this
      */

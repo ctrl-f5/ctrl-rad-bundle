@@ -2,6 +2,7 @@
 
 namespace Ctrl\RadBundle\Controller;
 
+use Ctrl\RadBundle\Crud\Action\DeleteAction;
 use Ctrl\RadBundle\Crud\Action\EditAction;
 use Ctrl\RadBundle\Crud\Action\IndexAction;
 use Ctrl\RadBundle\EntityService\UserService;
@@ -40,6 +41,7 @@ class UserController extends Controller implements ServiceProviderInterface
             ->setEntityLabel('User')
             ->setRoutePrefix('ctrl_rad_')
             ->setRoute('create', 'ctrl_rad_user_edit')
+            ->setRoute('delete', 'ctrl_rad_user_delete')
         ;
         return $builder;
     }
@@ -99,6 +101,23 @@ class UserController extends Controller implements ServiceProviderInterface
                     'ROLE_SUPER_ADMIN'      => 'SUPER_ADMIN',
                 ], $this->get('doctrine')->getRepository('CtrlRadBundle:User')->getKnownRoles(true))
             ]))
+        ;
+
+        return $this->buildCrud($builder)->execute($request);
+    }
+
+    /**
+     * @Route("/delete/{id}", name="ctrl_rad_user_delete")
+     * @param Request $request
+     * @param int|null $id
+     * @return Response
+     */
+    public function deleteAction(Request $request, $id = null)
+    {
+        $builder = $this->getCrudConfigBuilder(DeleteAction::class);
+
+        $builder
+            ->setEntityId($id)
         ;
 
         return $this->buildCrud($builder)->execute($request);

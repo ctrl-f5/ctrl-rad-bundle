@@ -69,6 +69,7 @@ class Config
             'index'   => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_index'; },
             'edit'    => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_edit'; },
             'create'  => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_create'; },
+            'delete'  => function (Options $options) use ($entityNameCanonical) { return $options['prefix'] . $entityNameCanonical . '_delete'; },
         ));
     }
 

@@ -49,20 +49,27 @@ class IndexAction extends AbstractAction
 
         $this->getTable()->setData($paginator);
 
-        return $this->templating->renderResponse($config['template'], array(
-            'table'         => $config['table'],
+        $viewVars = array_merge(array(
+            'table'         => $config['table']->createView(),
             'filterActive'  => $filterActive,
             'form'          => $formView,
             'config'        => $this->config,
             'options'       => $options,
             'routes'        => $routes,
             'action'        => $config,
-        ));
+        ), $options['view_vars']);
+
+        return $this->templating->renderResponse($config['template'], $viewVars);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
+
+        $resolver->setRequired([
+            'template'
+        ]);
+
         $resolver->setDefaults(array(
             'template'              => 'CtrlRadBundle:crud:index.html.twig',
             'template_filter_form'  => 'CtrlRadBundle:partial:_form_elements.html.twig',

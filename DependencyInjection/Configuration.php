@@ -34,6 +34,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('base')->defaultValue('CtrlRadBundle::base.html.twig')->end()
                         ->scalarNode('app')->defaultValue('CtrlRadBundle::app.html.twig')->end()
                         ->scalarNode('app_topbar_extra')->defaultValue('CtrlRadBundle::_topbar_extra.html.twig')->end()
+                        ->scalarNode('app_sidebar')->defaultValue('CtrlRadBundle::_sidebar.html.twig')->end()
                         ->scalarNode('crud_index')->defaultValue('CtrlRadBundle:crud:index.html.twig')->end()
                         ->scalarNode('index_table')->defaultValue('CtrlRadBundle:partial:_table.html.twig')->end()
                         ->scalarNode('crud_edit')->defaultValue('CtrlRadBundle:crud:edit.html.twig')->end()

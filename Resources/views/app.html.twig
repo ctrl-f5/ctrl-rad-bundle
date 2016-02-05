@@ -39,11 +39,7 @@
                 {% endif %}
             </ul>
 
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    {{ knp_menu_render('sidebar', {'allow_safe_labels': true}) }}
-                </div>
-            </div>
+            {% include ctrl_rad_templates.app_sidebar %}
 
         </nav>
 

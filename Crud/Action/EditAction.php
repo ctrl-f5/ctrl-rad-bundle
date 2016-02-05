@@ -85,6 +85,11 @@ class EditAction extends AbstractAction
     public function configureOptions(OptionsResolver $resolver)
     {
         parent::configureOptions($resolver);
+
+        $resolver->setRequired([
+            'template'
+        ]);
+
         $resolver->setDefaults([
             'template'                  => 'CtrlRadBundle:crud:edit.html.twig',
             'template_form_elements'    => 'CtrlRadBundle:partial:_form_elements.html.twig',

@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class MenuBuilder extends ContainerAware
+class MenuBuilder
 {
     private $factory;
 
