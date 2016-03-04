@@ -8,6 +8,7 @@ use Ctrl\RadBundle\Crud\Action\IndexAction;
 use Ctrl\RadBundle\EntityService\UserService;
 use Ctrl\RadBundle\TableView\TableBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -75,8 +76,8 @@ class UserController extends Controller implements ServiceProviderInterface
             ->setFilterForm($this->createFormBuilder(null, array('csrf_protection' => false))
                 ->add('username')
                 ->add('email')
-                ->add('enabled', 'checkbox')
-                ->add('locked', 'checkbox')
+                ->add('enabled', CheckboxType::class)
+                ->add('locked', CheckboxType::class)
                 ->getForm()
             )
             ->setTable($table);
@@ -96,7 +97,7 @@ class UserController extends Controller implements ServiceProviderInterface
 
         $builder
             ->setEntityId($id)
-            ->setForm($this->createForm(new UserEditType(), $builder->getEntity(), [
+            ->setForm($this->createForm(UserEditType::class, $builder->getEntity(), [
                 'role_choices' => array_merge([
                     'ROLE_USER'             => 'USER',
                     'ROLE_ADMIN'            => 'ADMIN',

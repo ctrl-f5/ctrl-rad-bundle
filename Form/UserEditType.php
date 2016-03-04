@@ -3,8 +3,10 @@
 namespace Ctrl\RadBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserEditType extends AbstractType
 {
@@ -13,11 +15,11 @@ class UserEditType extends AbstractType
         $builder
             ->add('username')
             ->add('email')
-            ->add('enabled')
+            ->add('enabled', CheckboxType::class)
             ->add('locked')
             ->add('expired')
             ->add('credentialsExpired')
-            ->add('roles', 'choice', array(
+            ->add('roles', ChoiceType::class, array(
                 'choices' => $options['role_choices'],
                 'multiple' => true,
                 'required' => true,
@@ -29,7 +31,7 @@ class UserEditType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class'    => 'Ctrl\\RadBundle\\Entity\\User',

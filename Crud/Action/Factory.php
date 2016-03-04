@@ -4,10 +4,13 @@ namespace Ctrl\RadBundle\Crud\Action;
 
 use Ctrl\RadBundle\Crud\Config;
 use Ctrl\RadBundle\Crud\ConfigBuilder;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class Factory extends ContainerAware
+class Factory implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * @param string $type
      * @param Config|ConfigBuilder $config

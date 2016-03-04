@@ -2,6 +2,7 @@
 
 namespace Ctrl\RadBundle\Menu;
 
+use Knp\Menu\FactoryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class SidebarMenuBuilder
@@ -19,6 +20,9 @@ class SidebarMenuBuilder
     public function onMenuConfigure(ConfigureMenuEvent $event)
     {
         $menu = $event->getMenu();
+
+        $menu->setChildrenAttribute('id', 'side-menu');
+        $menu->setChildrenAttribute('class', 'nav');
 
         $menu->addChild('home', array(
             'route' => 'homepage',

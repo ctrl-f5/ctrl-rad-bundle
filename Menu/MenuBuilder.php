@@ -23,9 +23,6 @@ class MenuBuilder
     {
         $menu = $this->factory->createItem('root');
 
-        $menu->setChildrenAttribute('id', 'side-menu');
-        $menu->setChildrenAttribute('class', 'nav');
-
         $eventDispatcher->dispatch(
             ConfigureMenuEvent::CONFIGURE,
             new ConfigureMenuEvent($this->factory, $menu)

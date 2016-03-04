@@ -19,7 +19,7 @@ services:
     ctrl_rad.crud.action_factory:
         class: Ctrl\RadBundle\Crud\Action\Factory
         calls:
-            - [ setContainer, [ @service_container ]]
+            - [ setContainer, [ "@service_container" ]]
 
     #
     # Custom Form types
@@ -40,14 +40,14 @@ services:
 
     twig.extension.ctrl_rad:
         class: Ctrl\RadBundle\Twig\CtrlRadExtension
-        arguments: [@twig, %ctrl_rad.config%]
+        arguments: ["@twig", "%ctrl_rad.config%"]
         public: false
         tags:
             - { name: twig.extension }
 
     twig.extension.bootstrap:
         class: Ctrl\RadBundle\Twig\BootstrapExtension
-        arguments: [@request_stack, @router, @translator.default]
+        arguments: ["@request_stack", "@router", "@translator.default"]
         public: false
         tags:
             - { name: twig.extension }

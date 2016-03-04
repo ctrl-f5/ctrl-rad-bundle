@@ -6,14 +6,13 @@ services:
 
     ctrl_rad.menu.sidebar:
         class: Knp\Menu\MenuItem
-        factory_service: ctrl_rad.menu_builder
-        factory_method: createSidebarMenu
+        factory: [ "@ctrl_rad.menu_builder", createSidebarMenu ]
         arguments: ["@request_stack", "@event_dispatcher"]
         tags:
             - { name: knp_menu.menu, alias: sidebar }
 
     ctrl_rad.menu_configurator.sidebar:
         class: Ctrl\RadBundle\Menu\SidebarMenuBuilder
-        arguments: [ @security.authorization_checker ]
+        arguments: [ "@security.authorization_checker" ]
         tags:
             - { name: kernel.event_listener, event: ctrl_rad.menu_configure, method: onMenuConfigure }
