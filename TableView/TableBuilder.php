@@ -353,6 +353,7 @@ class TableBuilder
             }
 
             $row = array(
+                'actions'       => $actions,
                 'data'          => $data,
                 'columns'       => $this->columns,
                 'cells'         => $cells,
