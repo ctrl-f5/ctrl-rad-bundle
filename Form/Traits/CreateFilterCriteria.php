@@ -18,7 +18,7 @@ trait CreateFilterCriteria
         foreach ($form as $child) {
             $field = $child->getName();
             $fieldPath = str_replace('_', '.', $field);
-            switch ($child->getConfig()->getType()->getName()) {
+            switch ($child->getConfig()->getType()->getBlockPrefix()) {
                 case 'text':
                     if ($child->getData()) {
                         $criteria[$fieldPath . ' LIKE'] = '%' . $child->getData() . '%';
