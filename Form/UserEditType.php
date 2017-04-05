@@ -16,9 +16,6 @@ class UserEditType extends AbstractType
             ->add('username')
             ->add('email')
             ->add('enabled', CheckboxType::class)
-            ->add('locked')
-            ->add('expired')
-            ->add('credentialsExpired')
             ->add('roles', ChoiceType::class, array(
                 'choices' => $options['role_choices'],
                 'multiple' => true,
