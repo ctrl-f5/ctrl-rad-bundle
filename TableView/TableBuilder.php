@@ -310,11 +310,11 @@ class TableBuilder
                 try {
 
                     $val = null;
+                    $actions = [];
                     switch (strtolower($col['type'])) {
                         case 'template':
                             break;
                         case 'action':
-                            $actions = array();
                             if ($columns->getActionColumn()) {
                                 foreach ($columns->getActionColumn()['options']['actions'] as $action) {
                                     if (is_callable($action['route_params'])) {
