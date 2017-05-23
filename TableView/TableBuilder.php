@@ -307,10 +307,10 @@ class TableBuilder
 
             $cells = [];
             foreach ($columns->getColumns() as $col) {
+                $actions = [];
                 try {
 
                     $val = null;
-                    $actions = [];
                     switch (strtolower($col['type'])) {
                         case 'template':
                             break;
